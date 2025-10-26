@@ -39,7 +39,7 @@ def checkExistingUser(inputUsername):
         print("This user doesn't exist. Do you wish to create a new account? (y/N)")
         confirmAccountCreation = userPointer()
         if confirmAccountCreation.lower() == 'y':
-            createUser(inputUsername)
+            createUser()
             return False
         else:
             print("Login with existing username.")
@@ -67,7 +67,7 @@ def loginUser():
 
 
 
-def createUser(loginInput):
+def createUser():
     pass
 
 
