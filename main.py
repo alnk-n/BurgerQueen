@@ -128,7 +128,7 @@ def placeOrder(con, cursor):
                 print('Invalid value. Select items with 1-3, confirm with 4 or quit with 5.')
         except ValueError:
             print('Invalid input. Please enter a number.')
-    print(order)
+    showOrder()
 
 
 if __name__ == "__main__":
