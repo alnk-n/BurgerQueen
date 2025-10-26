@@ -1,8 +1,12 @@
 def main():
     loginPage()
 
+
+
 def userPointer():
     return input('> ')
+
+
 
 def loginPage():
     print('HELLO, AND WELCOME TO BURGER QUEEN. CHOOSE AN ALTERNATIVE:')
@@ -23,17 +27,31 @@ def loginPage():
         except ValueError:
             print('Invalid input. Please enter a number.')
 
+
+
 username = 'admin'
 password = 'password'
 
 def loginUser():
     print('-' *50)
+    
     print('Login with existing username.')
     inputUsername = userPointer()
+    
     print('Input password.')
     inputPassword = userPointer()
 
+    if inputUsername == username and inputPassword == password:
+        print("Login successful!")
+    else:
+        print("Invalid username or password.")
+        
+
+
+
 def createUser():
     pass
+
+
 
 main()
