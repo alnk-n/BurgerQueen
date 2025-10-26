@@ -94,6 +94,10 @@ def createUser(con, cursor, inputUsername=None):
             con.commit()  # Commit to save the new user
             print(f'Account "{inputUsername}" created successfully!')
 
+order = []
+def placeOrder(con, cursor):
+    print('-' *50)
+
 
 if __name__ == "__main__":
    main()
