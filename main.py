@@ -12,4 +12,9 @@ def loginPage():
     if valg == 3:
         exit()
 
+def loginUser():
+
+def createUser():
+
+
 main()
