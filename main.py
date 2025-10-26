@@ -5,22 +5,24 @@ def main():
     cursor = con.cursor()
     cursor.execute("SELECT * FROM sqlite_master")
     
-    homePage()
+    homePage(con, cursor)
+
+    con.close()
 
 def userPointer():
     return input('> ')
 
-def homePage():
+def homePage(con, cursor):
     print('HELLO, AND WELCOME TO BURGER QUEEN. CHOOSE AN ALTERNATIVE:')
     print('[1] Log in with existing user\n[2] Create new user\n[3] Exit program')
     while True:
         try:
             valg = int(userPointer())
             if valg == 1:
-                loginUser()
+                loginUser(con, cursor)
                 break
             elif valg == 2:
-                createUser()
+                createUser(con, cursor)
                 break
             elif valg == 3:
                 exit()
@@ -35,7 +37,9 @@ user_database = {
 }
 
 def checkExistingUser(inputUsername):
-    if inputUsername in user_database:
+    cursor.execute("SELECT 1 FROM Users WHERE Username = ?", (inputUsername,))
+    user = cursor.fetchone()
+    if user:
         return True
     else:
         return False
