@@ -16,7 +16,7 @@ def homePage(con, cursor):
         try:
             valg = int(input('> '))
             if valg == 1:
-                loginUser(cursor)
+                loginUser(con, cursor)
                 break
             elif valg == 2:
                 createUser(con, cursor)
@@ -36,7 +36,7 @@ def checkExistingUser(cursor, inputUsername):
     else:
         return False
 
-def loginUser(cursor):
+def loginUser(con, cursor):
     print('-' *50)
     print('Login with existing username.')
     
@@ -49,7 +49,7 @@ def loginUser(cursor):
             print("This user doesn't exist. Do you wish to create a new account? (y/N)")
             confirmAccountCreation = input('> ')
             if confirmAccountCreation.lower() == 'y':
-                createUser(None, cursor, inputUsername) # If username isn't in database, program asks whether to send over input to createUser function
+                createUser(con, cursor, inputUsername) # If username isn't in database, program asks whether to send over input to createUser function
                 return
             else:
                 print('-' *50)
