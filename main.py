@@ -50,6 +50,7 @@ def loginUser():
                 createUser(inputUsername) # If username isn't in database, program asks whether to send over input to createUser function
                 return
             else:
+                print('-' *50)
                 print("Try logging in with an existing username.\n")
                 
     print('Input password.')
