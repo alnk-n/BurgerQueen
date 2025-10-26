@@ -32,12 +32,29 @@ def loginPage():
 username = 'admin'
 password = 'password'
 
+def checkExistingUser(inputUsername):
+    if inputUsername == username:
+        return True
+    else:
+        print("This user doesn't exist. Do you wish to create a new account? (y/N)")
+        confirmAccountCreation = userPointer()
+        if confirmAccountCreation == 'y' or 'Y':
+            createUser(inputUsername)
+            return False
+        else:
+            print("Returning to login.")
+            return False
+
+
 def loginUser():
     print('-' *50)
-    
     print('Login with existing username.')
-    inputUsername = userPointer()
     
+    while True:
+        inputUsername = userPointer()
+        if checkExistingUser(inputUsername):
+            break
+
     print('Input password.')
     inputPassword = userPointer()
 
@@ -45,7 +62,7 @@ def loginUser():
         print("Login successful!")
     else:
         print("Invalid username or password.")
-        
+        loginUser()
 
 
 
