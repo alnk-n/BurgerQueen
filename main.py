@@ -31,7 +31,7 @@ def homePage(con, cursor):
         except ValueError:
             print('Invalid input. Please enter a number.')
 
-def checkExistingUser(inputUsername):
+def checkExistingUser(cursor, inputUsername):
     cursor.execute("SELECT 1 FROM Users WHERE Username = ?", (inputUsername,))
     user = cursor.fetchone()
     if user:
