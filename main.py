@@ -1,4 +1,6 @@
 def main():
+    import sqlite3
+    con = sqlite3.connect("burgerqueen.db")
     homePage()
 
 def userPointer():
