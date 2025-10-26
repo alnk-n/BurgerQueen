@@ -97,6 +97,26 @@ def createUser(con, cursor, inputUsername=None):
 order = []
 def placeOrder(con, cursor):
     print('-' *50)
+    print('Select your order.')
+    print('[1] Whopper Queen\n[2] Triple Cheesy Princess\n[3] Kingdom Fries\n[4] Confirm order\n[5] Exit')
+    while True:
+        try:
+            choice = int(input('> '))
+            if choice == 1:
+                addToOrder("Whopper Queen")
+            elif choice == 2:
+                addToOrder("Triple Cheesy Princess")
+            elif choice == 3:
+                addToOrder("Kingdom Fries")
+            elif choice == 4:
+                break
+            elif choice == 5:
+                exit()
+            else:
+                print('Invalid value. Select items with 1-3, confirm with 4 or quit with 5.')
+        except ValueError:
+            print('Invalid input. Please enter a number.')
+    print(order)
 
 
 if __name__ == "__main__":
