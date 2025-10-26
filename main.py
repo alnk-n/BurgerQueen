@@ -91,4 +91,5 @@ def createUser(inputUsername=None):
             print(f'Account "{inputUsername}" created successfully!')
 
 
-main()
+if __name__ == "__main__":
+   main()
