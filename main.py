@@ -78,7 +78,7 @@ def createUser(con, cursor, inputUsername=None):
         print('Enter a username for your new account:')
         inputUsername = input('> ')
 
-    if checkExistingUser(con, cursor, inputUsername):
+    if checkExistingUser(cursor, inputUsername):
         print('This username already exists. Please choose a different one.')
         createUser(con, cursor)  # Retry if username already exists
     else:
