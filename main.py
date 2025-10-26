@@ -86,10 +86,11 @@ def createUser(con, cursor, inputUsername=None):
         inputPassword = input('> ')
         if inputPassword == "": # If nothing is input, return to homepage
             print('-' *50)
-            homePage()
+            homePage(con, cursor)
             return
         else:
-            user_database[inputUsername] = inputPassword  # Store the new user
+            cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, inputPassword)) # Store the new user
+            con.commit()  # Commit to save the new user
             print(f'Account "{inputUsername}" created successfully!')
 
 
