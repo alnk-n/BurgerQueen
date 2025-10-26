@@ -1,12 +1,8 @@
 def main():
     loginPage()
 
-
-
 def userPointer():
     return input('> ')
-
-
 
 def loginPage():
     print('HELLO, AND WELCOME TO BURGER QUEEN. CHOOSE AN ALTERNATIVE:')
@@ -27,39 +23,39 @@ def loginPage():
         except ValueError:
             print('Invalid input. Please enter a number.')
 
-
-
-username = 'admin'
-password = 'password'
+user_database = {
+    "admin": "password123",
+    "user": "hesterbest"
+}
 
 def checkExistingUser(inputUsername):
-    if inputUsername == username:
+    if inputUsername in user_database:
         return True
     else:
-        print("This user doesn't exist. Do you wish to create a new account? (y/N)")
-        confirmAccountCreation = userPointer()
-        if confirmAccountCreation.lower() == 'y':
-            createUser()
-            return False
-        else:
-            print("Login with existing username.")
-            return False
-
-
+        return False
 
 def loginUser():
     print('-' *50)
     print('Login with existing username.')
     
     while True:
+        print("Enter your username: ")
         inputUsername = userPointer()
         if checkExistingUser(inputUsername):
             break
-
+        else:
+            print("This user doesn't exist. Do you wish to create a new account? (y/N)")
+            confirmAccountCreation = userPointer()
+            if confirmAccountCreation.lower() == 'y':
+                createUser(inputUsername)
+                return
+            else:
+                print("Try logging in with an existing username.\n")
+                
     print('Input password.')
     inputPassword = userPointer()
 
-    if inputUsername == username and inputPassword == password:
+    if user_database[inputUsername] == inputPassword:
         print("Login successful!")
     else:
         print("Invalid username or password.")
@@ -67,8 +63,22 @@ def loginUser():
 
 
 
-def createUser():
-    pass
+def createUser(inputUsername=None):
+    print('-' *50)
+    print('Input new username.')
+
+    if not inputUsername:
+        print('Enter a username for your new account:')
+        inputUsername = userPointer()
+
+    if checkExistingUser(inputUsername):
+        print("This username already exists. Please choose a different one.")
+        createUser()  # Retry if username already exists
+    else:
+        print('Enter a password for your new account:')
+        inputPassword = userPointer()
+        user_database[inputUsername] = inputPassword  # Store the new user
+        print(f"Account created successfully for {inputUsername}!")
 
 
 
