@@ -95,6 +95,18 @@ def createUser(con, cursor, inputUsername=None):
             print(f'Account "{inputUsername}" created successfully!')
 
 order = []
+def showOrder():
+        print('**Your Order**')
+        print('-'*10)
+        unique_items = set(order)
+        for item in unique_items:
+            print(f"{order.count(item)}x {item}")
+        print('-'*10)
+
+def addToOrder(item):
+    order.append(item)
+    showOrder()
+
 def placeOrder(con, cursor):
     print('-' *50)
     print('Select your order.')
