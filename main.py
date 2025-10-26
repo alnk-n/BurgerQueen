@@ -16,7 +16,7 @@ def homePage(con, cursor):
         try:
             valg = int(input('> '))
             if valg == 1:
-                loginUser(con, cursor)
+                loginUser(cursor)
                 break
             elif valg == 2:
                 createUser(con, cursor)
@@ -36,33 +36,34 @@ def checkExistingUser(cursor, inputUsername):
     else:
         return False
 
-# def loginUser(con, cursor):
-#     print('-' *50)
-#     print('Login with existing username.')
+def loginUser(cursor):
+    print('-' *50)
+    print('Login with existing username.')
     
-#     while True:
-#         print("Enter your username: ")
-#         inputUsername = input('> ')
-#         if checkExistingUser(cursor, inputUsername):
-#             break # Stops loop if provided username exists in database
-#         else:
-#             print("This user doesn't exist. Do you wish to create a new account? (y/N)")
-#             confirmAccountCreation = input('> ')
-#             if confirmAccountCreation.lower() == 'y':
-#                 createUser(inputUsername) # If username isn't in database, program asks whether to send over input to createUser function
-#                 return
-#             else:
-#                 print('-' *50)
-#                 print("Try logging in with an existing username.\n")
+    while True:
+        print("Enter your username: ")
+        inputUsername = input('> ')
+        if checkExistingUser(cursor, inputUsername):
+            break # Stops loop if provided username exists in database
+        else:
+            print("This user doesn't exist. Do you wish to create a new account? (y/N)")
+            confirmAccountCreation = input('> ')
+            if confirmAccountCreation.lower() == 'y':
+                createUser(None, cursor, inputUsername) # If username isn't in database, program asks whether to send over input to createUser function
+                return
+            else:
+                print('-' *50)
+                print("Try logging in with an existing username.\n")
                 
-#     print('Input password.')
-#     inputPassword = input('> ')
-
-#     if user_database[inputUsername] == inputPassword: # Checks if password matches username key in dictionary
-#         print("Login successful!")
-#     else:
-#         print("Invalid username or password.")
-#         loginUser()
+    print('Input password.')
+    inputPassword = input('> ')
+    cursor.execute("SELECT Password FROM Users WHERE Username = ?", (inputUsername,))
+    user = cursor.fetchone()
+    if user: # Checks if password matches the database in matching row
+        print("Login successful!")
+    else:
+        print("Invalid username or password.")
+        loginUser(cursor)
 
 
 def createUser(con, cursor, inputUsername=None):
