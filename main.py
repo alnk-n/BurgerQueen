@@ -36,6 +36,10 @@ def checkExistingUser(cursor, inputUsername):
     else:
         return False
 
+def checkUserPrivileges(cursor):
+    print(currentUserID)
+    pass
+
 def loginUser(con, cursor):
     print('-' *50)
     print('Login with existing username.')
@@ -58,9 +62,14 @@ def loginUser(con, cursor):
     print('Input password.')
     inputPassword = input('> ')
     cursor.execute("SELECT Password FROM Users WHERE Username = ?", (inputUsername,))
-    user = cursor.fetchone()
-    if user and user[0] == inputPassword: # Checks if password matches the database in matching row
+    userPassword = cursor.fetchone()
+    if userPassword and userPassword[0] == inputPassword: # Checks if password matches the database in matching row
+        cursor.execute("SELECT UserID FROM Users WHERE Username = ?", (inputUsername,))
+        userID = cursor.fetchone()
+        global currentUserID
+        currentUserID = userID[0]
         print("Login successful!")
+        checkUserPrivileges(cursor)
     else:
         print('-' *50)
         print("Invalid username or password.")
