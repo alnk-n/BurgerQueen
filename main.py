@@ -59,11 +59,12 @@ def loginUser(con, cursor):
     inputPassword = input('> ')
     cursor.execute("SELECT Password FROM Users WHERE Username = ?", (inputUsername,))
     user = cursor.fetchone()
-    if user: # Checks if password matches the database in matching row
+    if user and user[0] == inputPassword: # Checks if password matches the database in matching row
         print("Login successful!")
     else:
+        print('-' *50)
         print("Invalid username or password.")
-        loginUser(cursor)
+        loginUser(con, cursor)
 
 
 def createUser(con, cursor, inputUsername=None):
@@ -76,10 +77,11 @@ def createUser(con, cursor, inputUsername=None):
 
     # If no value is provided through inputUsername, ask for username
     if not inputUsername:
-        print('Enter a username for your new account:')
+        print('Enter a username for your new account: ')
         inputUsername = input('> ')
 
     if checkExistingUser(cursor, inputUsername):
+        print('-' *50)
         print('This username already exists. Please choose a different one.')
         createUser(con, cursor)  # Retry if username already exists
     else:
