@@ -36,13 +36,13 @@ def checkExistingUser(cursor, inputUsername):
     else:
         return False
 
-def redirectUserDashboard(cursor, username):
+def redirectUserDashboard(con, cursor, username):
     cursor.execute("SELECT IsEmployee FROM Users WHERE Username = ?", (username,))
     employeeStatus = cursor.fetchone()
     if employeeStatus and employeeStatus[0] == 1:
-        employeeDashboard()
+        employeeDashboard(con, cursor, username)
     else:
-        customerDashboard()
+        customerDashboard(con, cursor, username)
 
 def loginUser(con, cursor):
     print('-' *50)
@@ -69,7 +69,7 @@ def loginUser(con, cursor):
     userPassword = cursor.fetchone()
     if userPassword and userPassword[0] == inputPassword: # Checks if password matches the database in matching row
         print("Login successful!")
-        redirectUserDashboard(cursor, inputUsername)
+        redirectUserDashboard(con, cursor, inputUsername)
     else:
         print('-' *50)
         print("Invalid username or password.")
@@ -105,8 +105,9 @@ def createUser(con, cursor, inputUsername=None):
             con.commit()  # Commit to save the new user
             print(f'Account "{inputUsername}" created successfully!')
 
+
 order = []
-def showOrder():
+def listSelection():
         print('**Your Order**')
         print('-'*10)
         unique_items = set(order)
@@ -116,7 +117,7 @@ def showOrder():
 
 def addToOrder(item):
     order.append(item)
-    showOrder()
+    listSelection()
 
 def placeOrder(con, cursor):
     print('-' *50)
@@ -139,7 +140,36 @@ def placeOrder(con, cursor):
                 print('Invalid value. Select items with 1-3, confirm with 4 or quit with 5.')
         except ValueError:
             print('Invalid input. Please enter a number.')
-    showOrder()
+    listSelection()
+
+
+def showOrderStatus(con, cursor, username):
+    pass
+
+
+def employeeDashboard(con, cursor, username):
+    pass
+
+
+def customerDashboard(con, cursor, username):
+    print('-' *50)
+    print(f'Hello {username}! Choose an option:')
+    print('[1] Order food\n[2] See order status\n[3] Log out')
+    while True:
+        try:
+            choice = int(input('> '))
+            if choice == 1:
+                placeOrder(con, cursor, username)
+            elif choice == 2:
+                showOrderStatus(cursor, username)
+            elif choice == 3:
+                print('\n'*10)
+                print('-'*50)
+                homePage(con, cursor)
+            else:
+                print('Invalid value. Order food with [1], See order status with [2], and Log out with [3]')
+        except ValueError:
+            print('Invalid input. Please enter a number.')
 
 
 if __name__ == "__main__":
