@@ -157,6 +157,7 @@ def employeeDashboard(con, cursor, username):
 
 
 def customerDashboard(con, cursor, username):
+    print('\n'*15)
     print('-' *50)
     print(f'Hello {username}! Choose an option:')
     print('[1] Order food\n[2] See order status\n[3] Log out')
