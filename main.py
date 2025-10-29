@@ -124,22 +124,28 @@ def createUser(con, cursor, inputUsername=None, exceptionMessage=None):
 
 
 def listSelection(order):
-        print('**Your Order**')
-        print('-'*10)
-        unique_items = set(order)
-        for item in unique_items:
-            print(f"{order.count(item)}x {item}")
-        print('-'*10)
+    print('-'*50)
+    print('Your Order')
+    print('-'*50)
+
+    order_items = order.split(",") if order else [] # split the order string using commas, into a list of items
+    unique_items = set(order_items) # use a set to find unique items
+    for item in unique_items:
+        print(f"{order_items.count(item)}x {item}")
+    
+    print('-'*50)
 
 def addToOrder(order, item):
-    order.append(item)
-    listSelection(order)
+    if order:
+        order += "," + item # if there's already items in the order, add comma before appending new item
+    else:
+        order = item # first item doens't need a comma
+    return order # returns the updated order variable
 
-def placeOrder(con, cursor, username):
-    order = ()
+def placeOrder(con, cursor, username, order = None):
     print('\n'*20)
     print('-' *50)
-    print('Select the items you wish to add to your order.\nConfirm with [4].')
+    print('Select the items you wish to add to your order.\n[Confirm with 4].')
     print('-' *50)
     
     print('[1] Whopper Queen\n[2] Triple Cheesy Princess\n[3] Kingdom Fries\n[4] Confirm order\n[5] Return')
@@ -147,20 +153,26 @@ def placeOrder(con, cursor, username):
         try:
             choice = int(input('> '))
             if choice == 1:
-                addToOrder(order, "Whopper Queen")
+                order = addToOrder(order, "Whopper Queen")
+                print('Added 1x Whopper Queen.')
             elif choice == 2:
-                addToOrder(order, "Triple Cheesy Princess")
+                order = addToOrder(order, "Triple Cheesy Princess")
+                print('Added 1x Triple Cheesy Princess.')
             elif choice == 3:
-                addToOrder(order, "Kingdom Fries")
+                order = addToOrder(order, "Kingdom Fries")
+                print('Added 1x Kingdom Fries.')
             elif choice == 4:
-                break
+                break # exit loop to confirm
             elif choice == 5:
-                redirectUserDashboard(con, cursor, username)
+                redirectUserDashboard(con, cursor, username) # returns to user dashboard
+                return
             else:
                 print('Invalid value. Select items with 1-3, confirm with 4 or quit with 5.')
         except ValueError:
             print('Invalid input. Please enter a number.')
-    listSelection()
+    
+    listSelection(order)
+    
 
 
 def showOrderStatus(con, cursor, username):
