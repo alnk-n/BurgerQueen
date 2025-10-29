@@ -10,13 +10,14 @@ def main():
     con.close()
 
 def homePage(con, cursor):
+    print('\n'*20)
     print('HELLO, AND WELCOME TO BURGER QUEEN. CHOOSE AN ALTERNATIVE:')
     print('[1] Log in with existing user\n[2] Create new user\n[3] Exit program')
     while True:
         try:
             valg = int(input('> '))
             if valg == 1:
-                loginUser(con, cursor)
+                loginUser(con, cursor, exceptionMessage=None)
                 break
             elif valg == 2:
                 createUser(con, cursor)
@@ -52,7 +53,10 @@ def redirectUserDashboard(con, cursor, username):
     else:
         customerDashboard(con, cursor, username)
 
-def loginUser(con, cursor):
+def loginUser(con, cursor, exceptionMessage):
+    print('\n'*20)
+    if exceptionMessage != None:
+        print(exceptionMessage)
     print('-' *50)
     print('Login with existing username.\n(Press Enter to return)')
     print('-' *50)
@@ -81,17 +85,19 @@ def loginUser(con, cursor):
         print("Login successful!")
         redirectUserDashboard(con, cursor, inputUsername)
     else:
-        print("Invalid username or password.")
-        loginUser(con, cursor)
+        loginUser(con, cursor, 'Invalid username or password.')
 
 
 def createUser(con, cursor, inputUsername=None):
+    print('\n'*20)
     print('-' *50)
     # Provides account name upon creation if sent from loginUser() function
     if inputUsername:
-        print(f'Create a new account called "{inputUsername}".\n(Press Enter to return)\n')
+        print(f'Create a new account called "{inputUsername}".')
     else:
-        print('Create a new account.\n(Press Enter to return)\n')
+        print('Create a new account.')
+    print('(Press Enter to return)')
+    print('-'*50)
 
     # If no value is provided through inputUsername, ask for username
     if not inputUsername:
@@ -124,7 +130,7 @@ def addToOrder(item):
     order.append(item)
     listSelection()
 
-def placeOrder(con, cursor):
+def placeOrder(con, cursor, username):
     print('-' *50)
     print('Select your order.')
     print('[1] Whopper Queen\n[2] Triple Cheesy Princess\n[3] Kingdom Fries\n[4] Confirm order\n[5] Exit')
@@ -157,7 +163,8 @@ def employeeDashboard(con, cursor, username):
 
 
 def customerDashboard(con, cursor, username):
-    print('\n'*15)
+    print('\n'*20)
+    print('Login successful.')
     print('-' *50)
     print(f'Hello {username}! Choose an option:')
     print('[1] Order food\n[2] See order status\n[3] Log out')
