@@ -35,14 +35,24 @@ def checkExistingUser(cursor, inputUsername):
         return True
     else:
         return False
+    
+def returnCheck(con, cursor, userInput):
+    if userInput == "":
+        print('\n'*20)
+        print('-'*50)
+        homePage(con, cursor)
+    else:
+        return
 
 def loginUser(con, cursor):
     print('-' *50)
-    print('Login with existing username.')
+    print('Login with existing username.\n(Press Enter to return)')
+    print('-' *50)
     
     while True:
-        print("Enter your username: ")
+        print("Username: ")
         inputUsername = input('> ')
+        returnCheck(con, cursor, inputUsername)
         if checkExistingUser(cursor, inputUsername):
             break # Stops loop if provided username exists in database
         else:
@@ -62,7 +72,6 @@ def loginUser(con, cursor):
     if user and user[0] == inputPassword: # Checks if password matches the database in matching row
         print("Login successful!")
     else:
-        print('-' *50)
         print("Invalid username or password.")
         loginUser(con, cursor)
 
@@ -71,30 +80,26 @@ def createUser(con, cursor, inputUsername=None):
     print('-' *50)
     # Provides account name upon creation if sent from loginUser() function
     if inputUsername:
-        print(f'Create new user "{inputUsername}".')
+        print(f'Create a new account called "{inputUsername}".\n(Press Enter to return)\n')
     else:
-        print('Create new user.')
+        print('Create a new account.\n(Press Enter to return)\n')
 
     # If no value is provided through inputUsername, ask for username
     if not inputUsername:
         print('Enter a username for your new account: ')
         inputUsername = input('> ')
+        returnCheck(con, cursor, inputUsername)
 
     if checkExistingUser(cursor, inputUsername):
-        print('-' *50)
-        print('This username already exists. Please choose a different one.')
+        print('This username is already taken. Please choose another.\n')
         createUser(con, cursor)  # Retry if username already exists
     else:
-        print('Enter a password for your new account (none to cancel):')
+        print('Enter a password for your new account:')
         inputPassword = input('> ')
-        if inputPassword == "": # If nothing is input, return to homepage
-            print('-' *50)
-            homePage(con, cursor)
-            return
-        else:
-            cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, inputPassword)) # Store the new user
-            con.commit()  # Commit to save the new user
-            print(f'Account "{inputUsername}" created successfully!')
+        returnCheck(con, cursor, inputPassword)
+        cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, inputPassword)) # Store the new user
+        con.commit()  # Commit to save the new user
+        print(f'Account "{inputUsername}" created successfully!')
 
 
 if __name__ == "__main__":
