@@ -74,8 +74,10 @@ def loginUser(con, cursor, exceptionMessage):
                 createUser(con, cursor, inputUsername) # If username isn't in database, program asks whether to send over input to createUser function
                 return
             else:
+                print('\n'*20)
+                print("Try logging in with an existing username.")
+                print("(Press Enter to return)")
                 print('-' *50)
-                print("Try logging in with an existing username.\n")
                 
     print('Input password.')
     inputPassword = input('> ')
