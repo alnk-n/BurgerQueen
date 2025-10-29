@@ -48,7 +48,7 @@ def redirectUserDashboard(con, cursor, username):
     if employeeStatus and employeeStatus[0] == 1:
         employeeDashboard(con, cursor, username)
     else:
-        customerDashboard(con, cursor, username)
+        customerDashboard(con, cursor, username, 'Login successful.')
 
 def loginUser(con, cursor, exceptionMessage):
     print('\n'*20)
@@ -182,7 +182,7 @@ def placeOrder(con, cursor, username, order = None):
             elif choice == 4:
                 break # exit loop to confirm
             elif choice == 5:
-                redirectUserDashboard(con, cursor, username) # returns to user dashboard
+                customerDashboard(con, cursor, username) # returns to user dashboard
                 return
             else:
                 print('Invalid value. Select items with 1-3, confirm with 4 or quit with 5.')
@@ -197,7 +197,7 @@ def placeOrder(con, cursor, username, order = None):
     for burgerID in burgerIDs:
         cursor.execute("INSERT INTO Orders (UserID, BurgerID) VALUES (?, ?)", (UserID, burgerID))
         con.commit()
-    print('Order sent. Please check its status on the "See order status page"')
+    customerDashboard(con, cursor, username, 'Order sent. You can always check its status on the "See order status" page.')
 
 
 def showOrderStatus(con, cursor, username):
@@ -208,9 +208,9 @@ def employeeDashboard(con, cursor, username):
     pass
 
 
-def customerDashboard(con, cursor, username):
+def customerDashboard(con, cursor, username, exceptionMessage = None):
     print('\n'*20)
-    print('Login successful.')
+    print(exceptionMessage)
     print('-' *50)
     print(f'Hello {username}! Choose an option:')
     print('[1] Order food\n[2] See order status\n[3] Log out')
