@@ -15,7 +15,7 @@ INSERT INTO Burgers (Name)
 VALUES
 ('Whopper Queen'),
 ('Triple Cheesy Princess'),
-('Kingdom');
+('Kingdom Fries');
 
 -- ingredient id, name and stock
 INSERT INTO Ingredients (IngredientName, AmountInStock)
