@@ -37,13 +37,10 @@ def checkExistingUser(cursor, inputUsername):
     else:
         return False
     
-def returnCheck(con, cursor, userInput):
+def returnCheck(userInput):
     if userInput == "":
-        print('\n'*20)
-        print('-'*50)
-        homePage(con, cursor)
-    else:
-        return
+        return True
+    return False
 
 def redirectUserDashboard(con, cursor, username):
     cursor.execute("SELECT IsEmployee FROM Users WHERE Username = ?", (username,))
@@ -64,7 +61,9 @@ def loginUser(con, cursor, exceptionMessage):
     while True:
         print("Username: ")
         inputUsername = input('> ')
-        returnCheck(con, cursor, inputUsername)
+        if returnCheck(inputUsername): # checks whether user input is equal to "", returns to home
+            homePage(con, cursor)
+            return
         if checkExistingUser(cursor, inputUsername):
             break # Stops loop if provided username exists in database
         else:
@@ -105,7 +104,9 @@ def createUser(con, cursor, inputUsername=None):
     if not inputUsername:
         print('Enter a username for your new account: ')
         inputUsername = input('> ')
-        returnCheck(con, cursor, inputUsername)
+        if returnCheck(inputUsername): # checks whether user input is equal to "", returns to home
+            homePage(con, cursor)
+            return
 
     if checkExistingUser(cursor, inputUsername):
         print('This username is already taken. Please choose another.\n')
@@ -113,7 +114,9 @@ def createUser(con, cursor, inputUsername=None):
     else:
         print('Enter a password for your new account:')
         inputPassword = input('> ')
-        returnCheck(con, cursor, inputPassword)
+        if returnCheck(inputUsername): # checks whether user input is equal to "", returns to home
+            homePage(con, cursor)
+            return
         cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, inputPassword)) # Store the new user
         con.commit()  # Commit to save the new user
         print(f'Account "{inputUsername}" created successfully!')
