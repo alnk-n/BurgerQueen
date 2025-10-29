@@ -117,6 +117,7 @@ def createUser(con, cursor, inputUsername=None):
         cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, inputPassword)) # Store the new user
         con.commit()  # Commit to save the new user
         print(f'Account "{inputUsername}" created successfully!')
+        redirectUserDashboard(con, cursor, inputUsername)
 
 
 order = []
