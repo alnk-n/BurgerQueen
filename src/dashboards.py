@@ -1,3 +1,7 @@
+# dashboards.py
+import orders
+
+
 def homePage(con, cursor):
 
     import auth
@@ -9,10 +13,10 @@ def homePage(con, cursor):
         try:
             valg = int(input('> '))
             if valg == 1:
-                loginUser(con, cursor, exceptionMessage=None)
+                auth.loginUser(con, cursor, exceptionMessage=None)
                 break
             elif valg == 2:
-                createUser(con, cursor)
+                auth.createUser(con, cursor)
                 break
             elif valg == 3:
                 exit()
@@ -45,9 +49,9 @@ def customerDashboard(con, cursor, username, exceptionMessage = None):
         try:
             choice = int(input('> '))
             if choice == 1:
-                placeOrder(con, cursor, username)
+                orders.placeOrder(con, cursor, username)
             elif choice == 2:
-                showOrderStatus(cursor, username)
+                orders.showOrderStatus(cursor, username)
             elif choice == 3:
                 print('\n'*10)
                 print('-'*50)

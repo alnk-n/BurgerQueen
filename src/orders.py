@@ -1,4 +1,5 @@
 from auth import fetchUserID
+import dashboards
 
 
 def fetchBurgerIDs(cursor, order):
@@ -59,7 +60,7 @@ def placeOrder(con, cursor, username, order = None):
             elif choice == 4:
                 break # exit loop to confirm
             elif choice == 5:
-                customerDashboard(con, cursor, username) # returns to user dashboard
+                dashboards.customerDashboard(con, cursor, username) # returns to user dashboard
                 return
             else:
                 print('Invalid value. Select items with 1-3, confirm with 4 or quit with 5.')
@@ -74,7 +75,7 @@ def placeOrder(con, cursor, username, order = None):
     for burgerID in burgerIDs:
         cursor.execute("INSERT INTO Orders (UserID, BurgerID) VALUES (?, ?)", (UserID, burgerID))
         con.commit()
-    customerDashboard(con, cursor, username, 'Order sent. You can always check its status on the "See order status" page.')
+    dashboards.customerDashboard(con, cursor, username, 'Order sent. You can always check its status on the "See order status" page.')
 
 
 def showOrderStatus(con, cursor, username):
