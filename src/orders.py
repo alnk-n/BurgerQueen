@@ -77,8 +77,8 @@ def placeOrder(con, cursor, username, order = None):
     newOrderID = (lastOrder or 0) + 1
 
     for burgerID in burgerIDs:
-        cursor.execute("INSERT INTO Orders (OrderID, UserID, BurgerID) VALUES (?, ?)", (newOrderID, UserID, burgerID))
-        con.commit()
+        cursor.execute("INSERT INTO Orders (OrderID, UserID, BurgerID) VALUES (?, ?, ?)", (newOrderID, UserID, burgerID))
+    con.commit()
     dashboards.customerDashboard(con, cursor, username, 'Order sent. You can always check its status on the "See order status" page.')
 
 
