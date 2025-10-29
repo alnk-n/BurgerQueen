@@ -127,16 +127,30 @@ def fetchUserID(cursor, username):
     userID = cursor.fetchone()
     return userID
 
+def fetchBurgerIDs(cursor, order):
+    burgerNamesList = order.split(',')
+    burgerIDs = []
+
+    for burgerName in burgerNamesList:
+        cursor.execute("SELECT BurgerID FROM Burgers WHERE Name = ?", (burgerName,))
+        result = cursor.fetchone()
+        
+        if result:
+            burgerIDs.append(str(result[0]))
+        else:
+            print(f'Burger "{burgerName}" not found in database.')
+
+    return ",".join(burgerIDs) # return the burgerIDs as a string separated by commas
 
 def listSelection(order):
     print('-'*50)
     print('Your Order')
     print('-'*50)
 
-    order_items = order.split(",") if order else [] # split the order string using commas, into a list of items
-    unique_items = set(order_items) # use a set to find unique items
-    for item in unique_items:
-        print(f"{order_items.count(item)}x {item}")
+    orderItems = order.split(",") if order else [] # split the order string using commas, into a list of items
+    uniqueItems = set(orderItems) # use a set to find unique items
+    for item in uniqueItems:
+        print(f"{orderItems.count(item)}x {item}")
     
     print('-'*50)
 
@@ -166,7 +180,6 @@ def placeOrder(con, cursor, username, order = None):
             elif choice == 3:
                 order = addToOrder(order, "Kingdom Fries")
                 print('Added 1x Kingdom Fries.')
-                print (order)
             elif choice == 4:
                 break # exit loop to confirm
             elif choice == 5:
@@ -178,11 +191,13 @@ def placeOrder(con, cursor, username, order = None):
             print('Invalid input. Please enter a number.')
     
     listSelection(order)
-    
 
-    # UserID = fetchUserID(cursor, username)
-    # cursor.execute("INSERT INTO Orders (UserID, BurgerID) VALUES (?, ?)", (UserID, )) # Store the new user
-    # con.commit()  # Commit to save the new user
+    burgerIDs = fetchBurgerIDs(cursor, order)
+    UserID = fetchUserID(cursor, username)
+    cursor.execute("INSERT INTO Orders (UserID, BurgerID) VALUES (?, ?)", (UserID, burgerIDs))
+    con.commit()
+
+    print('Order sent. Please check its status on the "See order status page"')
 
 
 def showOrderStatus(con, cursor, username):
