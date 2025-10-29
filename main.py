@@ -139,8 +139,7 @@ def fetchBurgerIDs(cursor, order):
             burgerIDs.append(str(result[0]))
         else:
             print(f'Burger "{burgerName}" not found in database.')
-
-    return ",".join(burgerIDs) # return the burgerIDs as a string separated by commas
+    return burgerIDs
 
 def listSelection(order):
     print('-'*50)
@@ -192,11 +191,12 @@ def placeOrder(con, cursor, username, order = None):
     
     listSelection(order)
 
-    burgerIDs = fetchBurgerIDs(cursor, order)
     UserID = fetchUserID(cursor, username)
-    cursor.execute("INSERT INTO Orders (UserID, BurgerID) VALUES (?, ?)", (UserID, burgerIDs))
-    con.commit()
+    burgerIDs = fetchBurgerIDs(cursor, order)
 
+    for burgerID in burgerIDs:
+        cursor.execute("INSERT INTO Orders (UserID, BurgerID) VALUES (?, ?)", (UserID, burgerID))
+        con.commit()
     print('Order sent. Please check its status on the "See order status page"')
 
 
