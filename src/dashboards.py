@@ -62,8 +62,10 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
 
 
 def customerDashboard(con, cursor, username, exceptionMessage = None):
-    print('\n'*20)
-    if exceptionMessage:
+    if exceptionMessage == "nospace":
+        pass
+    else:
+        print('\n'*20)
         print(exceptionMessage)
     print('-' *50)
     print(f'Hello {username}! Choose an option:')
