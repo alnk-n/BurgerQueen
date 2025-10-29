@@ -136,10 +136,13 @@ def addToOrder(order, item):
     listSelection(order)
 
 def placeOrder(con, cursor, username):
-    order = []
+    order = ()
+    print('\n'*20)
     print('-' *50)
-    print('Select your order.')
-    print('[1] Whopper Queen\n[2] Triple Cheesy Princess\n[3] Kingdom Fries\n[4] Confirm order\n[5] Exit')
+    print('Select the items you wish to add to your order.\nConfirm with [4].')
+    print('-' *50)
+    
+    print('[1] Whopper Queen\n[2] Triple Cheesy Princess\n[3] Kingdom Fries\n[4] Confirm order\n[5] Return')
     while True:
         try:
             choice = int(input('> '))
@@ -152,7 +155,7 @@ def placeOrder(con, cursor, username):
             elif choice == 4:
                 break
             elif choice == 5:
-                exit()
+                redirectUserDashboard(con, cursor, username)
             else:
                 print('Invalid value. Select items with 1-3, confirm with 4 or quit with 5.')
         except ValueError:
