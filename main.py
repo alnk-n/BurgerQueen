@@ -89,9 +89,11 @@ def loginUser(con, cursor, exceptionMessage):
         loginUser(con, cursor, 'Invalid username or password.')
 
 
-def createUser(con, cursor, inputUsername=None):
+def createUser(con, cursor, inputUsername=None, exceptionMessage=None):
     print('\n'*20)
     print('-' *50)
+    if exceptionMessage:
+        print(exceptionMessage)
     # Provides account name upon creation if sent from loginUser() function
     if inputUsername:
         print(f'Create a new account called "{inputUsername}".')
@@ -109,22 +111,19 @@ def createUser(con, cursor, inputUsername=None):
             return
 
     if checkExistingUser(cursor, inputUsername):
-        print('This username is already taken. Please choose another.\n')
-        createUser(con, cursor)  # Retry if username already exists
+        createUser(con, cursor, None, 'This username is already taken. Please choose another.')  # Retry if username already exists
     else:
         print('Enter a password for your new account:')
         inputPassword = input('> ')
-        if returnCheck(inputUsername): # checks whether user input is equal to "", returns to home
-            homePage(con, cursor)
-            return
+        if returnCheck(inputPassword):
+            homePage(con, cursor) # Return to main menu if Enter is pressed
         cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, inputPassword)) # Store the new user
         con.commit()  # Commit to save the new user
         print(f'Account "{inputUsername}" created successfully!')
         redirectUserDashboard(con, cursor, inputUsername)
 
 
-order = []
-def listSelection():
+def listSelection(order):
         print('**Your Order**')
         print('-'*10)
         unique_items = set(order)
@@ -132,11 +131,12 @@ def listSelection():
             print(f"{order.count(item)}x {item}")
         print('-'*10)
 
-def addToOrder(item):
+def addToOrder(order, item):
     order.append(item)
-    listSelection()
+    listSelection(order)
 
 def placeOrder(con, cursor, username):
+    order = []
     print('-' *50)
     print('Select your order.')
     print('[1] Whopper Queen\n[2] Triple Cheesy Princess\n[3] Kingdom Fries\n[4] Confirm order\n[5] Exit')
@@ -144,11 +144,11 @@ def placeOrder(con, cursor, username):
         try:
             choice = int(input('> '))
             if choice == 1:
-                addToOrder("Whopper Queen")
+                addToOrder(order, "Whopper Queen")
             elif choice == 2:
-                addToOrder("Triple Cheesy Princess")
+                addToOrder(order, "Triple Cheesy Princess")
             elif choice == 3:
-                addToOrder("Kingdom Fries")
+                addToOrder(order, "Kingdom Fries")
             elif choice == 4:
                 break
             elif choice == 5:
