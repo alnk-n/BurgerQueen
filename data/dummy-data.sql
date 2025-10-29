@@ -43,10 +43,9 @@ VALUES
 (1, 6, 1);
 
 -- foreign user id and burger id, and status
-INSERT INTO Orders (UserID, BurgerID, IsDone)
+INSERT INTO Orders (OrderID, UserID, BurgerID, IsDone)
 VALUES
-(1, 1, 1),
-(1, 1, 0),
-(4, 2, 0),
-(4, 2, 0),
-(3, 1, 0);
+(1, 1, 1, 1),
+(1, 1, 1, 0),
+(2, 4, 2, 0),
+(3, 3, 1, 0);
