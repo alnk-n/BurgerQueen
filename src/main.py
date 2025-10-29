@@ -1,6 +1,7 @@
+from utils import returnCheck
 def main():
     import sqlite3
-    
+
     con = sqlite3.connect("../data/burgerqueen.db")
     cursor = con.cursor()
     cursor.execute("SELECT * FROM sqlite_master")
@@ -36,11 +37,6 @@ def checkExistingUser(cursor, inputUsername):
         return True
     else:
         return False
-    
-def returnCheck(userInput):
-    if userInput == "":
-        return True
-    return False
 
 def redirectUserDashboard(con, cursor, username):
     cursor.execute("SELECT IsEmployee FROM Users WHERE Username = ?", (username,))
