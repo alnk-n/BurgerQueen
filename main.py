@@ -191,7 +191,7 @@ def placeOrder(con, cursor, username, order = None):
     
     listSelection(order)
 
-    UserID = fetchUserID(cursor, username)
+    UserID = fetchUserID(cursor, username)[0]
     burgerIDs = fetchBurgerIDs(cursor, order)
 
     for burgerID in burgerIDs:
