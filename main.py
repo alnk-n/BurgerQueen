@@ -122,6 +122,11 @@ def createUser(con, cursor, inputUsername=None, exceptionMessage=None):
         print(f'Account "{inputUsername}" created successfully!')
         redirectUserDashboard(con, cursor, inputUsername)
 
+def fetchUserID(cursor, username):
+    cursor.execute("SELECT UserID FROM Users WHERE Username = ?", (username,))
+    userID = cursor.fetchone()
+    return userID
+
 
 def listSelection(order):
     print('-'*50)
@@ -161,6 +166,7 @@ def placeOrder(con, cursor, username, order = None):
             elif choice == 3:
                 order = addToOrder(order, "Kingdom Fries")
                 print('Added 1x Kingdom Fries.')
+                print (order)
             elif choice == 4:
                 break # exit loop to confirm
             elif choice == 5:
@@ -173,6 +179,10 @@ def placeOrder(con, cursor, username, order = None):
     
     listSelection(order)
     
+
+    # UserID = fetchUserID(cursor, username)
+    # cursor.execute("INSERT INTO Orders (UserID, BurgerID) VALUES (?, ?)", (UserID, )) # Store the new user
+    # con.commit()  # Commit to save the new user
 
 
 def showOrderStatus(con, cursor, username):
