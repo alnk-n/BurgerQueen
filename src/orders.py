@@ -78,5 +78,5 @@ def placeOrder(con, cursor, username, order = None):
     dashboards.customerDashboard(con, cursor, username, 'Order sent. You can always check its status on the "See order status" page.')
 
 
-def showOrderStatus(con, cursor, username):
+def viewMyOrders(con, cursor, username):
     pass
