@@ -128,16 +128,19 @@ def viewAllOrders(con, cursor):
 
     ordersDictionary = {}
 
-    for OrderID, BurgerName, status in rows:
+    for OrderID, User, BurgerName, status in rows:
         if OrderID not in ordersDictionary:
-            ordersDictionary[OrderID] = []
+            ordersDictionary[OrderID, User] = []
         ordersDictionary[OrderID].append((BurgerName, status))
     
+    print(ordersDictionary)
+
     print('-'*50)
-    print("Your orders:")
+    print("All orders:")
     print('-'*50)
     for OrderID, items in ordersDictionary.items():
         print(f"Order Number #{OrderID:<{10}} | Status")
+        print(f"Ordered by: {User}")
         for burger_name, status in items:
             if status == 1:
                 print(f"- {burger_name:<{22}} | [Done]")
@@ -146,4 +149,4 @@ def viewAllOrders(con, cursor):
         print()
     print("-" * 50)
     input("(Press Enter to exit)")
-    dashboards.customerDashboard(con, cursor, username)
+    dashboards.employeeDashboard(con, cursor)
