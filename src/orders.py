@@ -76,7 +76,7 @@ def placeOrder(con, cursor, username, order = None):
     for burgerID in burgerIDs:
         cursor.execute("INSERT INTO Orders (OrderID, UserID, BurgerID) VALUES (?, ?, ?)", (newOrderID, UserID, burgerID))
     con.commit()
-    
+
     listSelection(order)
     dashboards.customerDashboard(con, cursor, username, "nospace")
 
@@ -113,3 +113,41 @@ def viewMyOrders(con, cursor, username):
     print("-" * 50)
     input("(Press Enter to exit)")
     dashboards.customerDashboard(con, cursor, username)
+
+
+
+def viewAllOrders(con, cursor, username):
+    cursor.execute("""
+    SELECT o.OrderID, u.Username, b.Name, o.IsDone
+    FROM Orders o
+    JOIN Burgers b ON o.BurgerID = b.BurgerID
+    JOIN Users u ON o.UserID = u.UserID
+    ORDER BY o.OrderID
+    """)
+    rows = cursor.fetchall()
+
+    if not rows:
+        dashboards.employeeDashboard(con, cursor, username, 'Whoops! There are no orders in the database.')
+
+    ordersDictionary = {}
+
+    for OrderID, User, BurgerName, status in rows:
+        if OrderID not in ordersDictionary:
+            ordersDictionary[OrderID] = {'User': User, 'Items': []}
+        ordersDictionary[OrderID]['Items'].append((BurgerName, status))
+
+    print('-'*50)
+    print("All orders:")
+    print('-'*50)
+    for OrderID, items in ordersDictionary.items():
+        print(f"Order Number #{OrderID:<{10}} | Status")
+        print(f"Ordered by: {items['User']:<{12}} |")
+        for burger_name, status in items['Items']:
+            if status == 1:
+                print(f"- {burger_name:<{22}} | [Done]")
+            else:
+                print(f"- {burger_name:<{22}} | [Preparing..]")
+        print()
+    print("-" * 50)
+    input("(Press Enter to exit)")
+    dashboards.employeeDashboard(con, cursor, username)
