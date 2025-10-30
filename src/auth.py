@@ -21,49 +21,64 @@ def fetchUserID(cursor, username):
 
 
 def loginUser(con, cursor, exceptionMessage):
-    print('\n'*20)
-    if exceptionMessage != None:
+    print('\n' * 20)
+    if exceptionMessage is not None:
         print(exceptionMessage)
-    print('-' *50)
+    print('-' * 50)
     print('Login with existing username.\n(Press Enter to return)')
-    print('-' *50)
-    
+    print('-' * 50)
+
     while True:
         print("Username: ")
         inputUsername = input('> ')
-        if returnCheck(inputUsername): # checks whether user input is equal to "", returns to home
+        if returnCheck(inputUsername):  # checks whether user input is equal to "", returns to home
             dashboards.homePage(con, cursor)
             return
         if checkExistingUser(cursor, inputUsername):
-            break # Stops loop if provided username exists in database
+            break
         else:
             print("This user doesn't exist. Do you wish to create a new account? (y/N)")
             confirmAccountCreation = input('> ')
             if confirmAccountCreation.lower() == 'y':
-                createUser(con, cursor, inputUsername) # If username isn't in database, program asks whether to send over input to createUser function
+                createUser(con, cursor, inputUsername)
                 return
             else:
-                print('\n'*20)
+                print('\n' * 20)
                 print("Try logging in with an existing username.")
                 print("(Press Enter to return)")
-                print('-' *50)
-                
+                print('-' * 50)
+
     print('Input password.')
     inputPassword = input('> ')
 
     cursor.execute("SELECT Password FROM Users WHERE Username = ?", (inputUsername,))
-    userPasswordHash = cursor.fetchone()
+    row = cursor.fetchone()
 
-    if userPasswordHash:
-        try:
-            ph.verify(userPasswordHash[0], inputPassword)
-            dashboards.redirectUserDashboard(con, cursor, inputUsername)
-        except argon2.exceptions.VerifyMismatchError:
-            loginUser(con, cursor, 'Invalid username or password.')
-            return
-    else:
+    if not row:
         loginUser(con, cursor, 'Invalid username or password.')
         return
+
+    stored = row[0]
+
+    try:
+        # check if password looks like an argon2 hash
+        if isinstance(stored, str) and stored.startswith('$argon2'):
+            ph.verify(stored, inputPassword)
+        else:
+            if stored != inputPassword:
+                raise argon2.exceptions.VerifyMismatchError()
+            # convert plaintext to hash
+            newhash = ph.hash(inputPassword)
+            cursor.execute("UPDATE Users SET Password = ? WHERE Username = ?", (newhash, inputUsername))
+            con.commit()
+
+        dashboards.redirectUserDashboard(con, cursor, inputUsername)
+        return
+
+    except (argon2.exceptions.VerifyMismatchError, argon2.exceptions.InvalidHash):
+        loginUser(con, cursor, 'Invalid username or password.')
+        return
+
 
 def createUser(con, cursor, inputUsername=None, exceptionMessage=None):
     print('\n'*20)
