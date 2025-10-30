@@ -130,8 +130,8 @@ def viewAllOrders(con, cursor):
 
     for OrderID, User, BurgerName, status in rows:
         if OrderID not in ordersDictionary:
-            ordersDictionary[OrderID, User] = []
-        ordersDictionary[OrderID].append((BurgerName, status))
+            ordersDictionary[OrderID] = {'User': User, 'Items': []}
+        ordersDictionary[OrderID]['Items'].append((BurgerName, status))
     
     print(ordersDictionary)
 
