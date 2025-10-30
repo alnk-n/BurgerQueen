@@ -60,8 +60,10 @@ def loginUser(con, cursor, exceptionMessage):
             dashboards.redirectUserDashboard(con, cursor, inputUsername)
         except argon2.exceptions.VerifyMismatchError:
             loginUser(con, cursor, 'Invalid username or password.')
+            return
     else:
         loginUser(con, cursor, 'Invalid username or password.')
+        return
 
 def createUser(con, cursor, inputUsername=None, exceptionMessage=None):
     print('\n'*20)

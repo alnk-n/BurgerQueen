@@ -14,10 +14,10 @@ def homePage(con, cursor):
             valg = int(input('> '))
             if valg == 1:
                 auth.loginUser(con, cursor, exceptionMessage=None)
-                break
+                return
             elif valg == 2:
                 auth.createUser(con, cursor)
-                break
+                return
             elif valg == 3:
                 exit()
             else:
@@ -56,6 +56,7 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
                 print('\n'*10)
                 print('-'*50)
                 homePage(con, cursor)
+                return
             else:
                 print('Invalid value. Select option 1, 2, or 3, or log out with 4.')
         except ValueError:
@@ -84,6 +85,7 @@ def customerDashboard(con, cursor, username, exceptionMessage = None):
                 print('\n'*10)
                 print('-'*50)
                 homePage(con, cursor)
+                return
             else:
                 print('Invalid value. Order food with [1], See order status with [2], and Log out with [3]')
         except ValueError:
