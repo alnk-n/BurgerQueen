@@ -115,7 +115,6 @@ def viewMyOrders(con, cursor, username):
     dashboards.customerDashboard(con, cursor, username)
 
 
-
 def viewAllOrders(con, cursor, username):
     cursor.execute("""
     SELECT o.OrderID, u.Username, b.Name, o.IsDone
@@ -149,5 +148,64 @@ def viewAllOrders(con, cursor, username):
                 print(f"- {burger_name:<{22}} | [Preparing..]")
         print()
     print("-" * 50)
+    input("(Press Enter to exit)")
+    dashboards.employeeDashboard(con, cursor, username)
+
+
+def viewOngoingOrders(con, cursor, username):
+    cursor.execute("""
+    SELECT o.OrderID, u.Username, b.Name, o.IsDone
+    FROM Orders o
+    JOIN Burgers b ON o.BurgerID = b.BurgerID
+    JOIN Users u ON o.UserID = u.UserID
+    WHERE o.IsDone = 0
+    ORDER BY o.OrderID
+    """)
+    rows = cursor.fetchall()
+
+    if not rows:
+        dashboards.employeeDashboard(con, cursor, username, 'Phew! There are no ongoing orders.')
+
+    ordersDictionary = {}
+
+    for OrderID, User, BurgerName, status in rows:
+        if OrderID not in ordersDictionary:
+            ordersDictionary[OrderID] = {'User': User, 'Items': []}
+        ordersDictionary[OrderID]['Items'].append((BurgerName, status))
+
+    print('-'*50)
+    print("Ongoing orders:")
+    print('-'*50)
+    for OrderID, items in ordersDictionary.items():
+        print(f"Order Number #{OrderID:<{10}} | Status")
+        print(f"Ordered by: {items['User']:<{12}} |")
+        for burger_name, status in items['Items']:
+            if status == 1:
+                print(f"- {burger_name:<{22}} | [Done]")
+            else:
+                print(f"- {burger_name:<{22}} | [Preparing..]")
+        print()
+    print("-" * 50)
+
+    print("Enter the order number to mark it as complete (or press Enter to exit):")
+    choice = int(input('> '))
+
+    if choice:
+        try:
+            cursor.execute("UPDATE Orders SET IsDone = 1 WHERE OrderID = ? AND IsDone = 0", (choice,))
+            con.commit()
+            
+            print('\n'*20)
+            print('-'*50)
+            if cursor.rowcount > 0:
+                print(f"Order #{choice} has been marked as complete.")
+                viewOngoingOrders(con, cursor, username)
+            else:
+                print(f"Order #{choice} not found or already completed.")
+                viewOngoingOrders(con, cursor, username)
+
+        except ValueError:
+            print("Invalid input. Please enter a valid order number.")
+
     input("(Press Enter to exit)")
     dashboards.employeeDashboard(con, cursor, username)
