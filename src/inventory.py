@@ -21,4 +21,25 @@ def updateInventory(con, cursor, order):
     con.commit()
 
 def viewInventory(con, cursor, username):
-    pass
+    cursor.execute("SELECT IngredientName, AmountInStock FROM Ingredients")
+    rows = cursor.fetchall()
+
+    if not rows:
+        print("No ingredients found in inventory.")
+        return
+
+    ingredientsDictionary = {}
+
+    for IngredientName, AmountInStock in rows:
+        ingredientsDictionary[IngredientName] = AmountInStock
+
+    print('\n'*20)
+    print('-' * 50)
+    print("Current Inventory:")
+    print('-' * 50)
+    for ingredient, amount in ingredientsDictionary.items():
+        print(f"{ingredient:<{30}} | x {amount}")
+    print('-' * 50)
+    input("(press Enter to exit)")
+    import dashboards
+    dashboards.employeeDashboard(con, cursor, username)
