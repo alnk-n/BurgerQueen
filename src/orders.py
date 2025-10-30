@@ -116,7 +116,7 @@ def viewMyOrders(con, cursor, username):
 
 
 
-def viewAllOrders(con, cursor):
+def viewAllOrders(con, cursor, username):
     cursor.execute("""
     SELECT o.OrderID, u.Username, b.Name, o.IsDone
     FROM Orders o
@@ -125,6 +125,9 @@ def viewAllOrders(con, cursor):
     ORDER BY o.OrderID
     """)
     rows = cursor.fetchall()
+
+    if not rows:
+        dashboards.employeeDashboard(con, cursor, username, 'Whoops! There are no orders in the database.')
 
     ordersDictionary = {}
 
@@ -141,7 +144,7 @@ def viewAllOrders(con, cursor):
     for OrderID, items in ordersDictionary.items():
         print(f"Order Number #{OrderID:<{10}} | Status")
         print(f"Ordered by: {User}")
-        for burger_name, status in items:
+        for burger_name, status in items['Items']:
             if status == 1:
                 print(f"- {burger_name:<{22}} | [Done]")
             else:
