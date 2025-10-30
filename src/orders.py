@@ -100,5 +100,10 @@ def viewMyOrders(con, cursor, username):
         ordersDictionary[OrderID].append((BurgerName, status))
     
     print("Your orders:")
-    print("-"*50)
-    print(ordersDictionary)
+    for OrderID, items in ordersDictionary.items():
+        print(f"Order Number #{OrderID}        | Status")
+        for burger_name, status in items:
+            print(f"- {burger_name:<22} | [{status}]")
+        print()
+    print("-" * 50)
+    input("(Press Enter to exit)")
