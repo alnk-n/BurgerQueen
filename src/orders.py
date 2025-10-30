@@ -174,7 +174,7 @@ def viewOngoingOrders(con, cursor, username):
         ordersDictionary[OrderID]['Items'].append((BurgerName, status))
 
     print('-'*50)
-    print("All orders:")
+    print("Ongoing orders:")
     print('-'*50)
     for OrderID, items in ordersDictionary.items():
         print(f"Order Number #{OrderID:<{10}} | Status")
@@ -186,5 +186,16 @@ def viewOngoingOrders(con, cursor, username):
                 print(f"- {burger_name:<{22}} | [Preparing..]")
         print()
     print("-" * 50)
+
+    print("Enter the order number to mark it as complete (or press Enter to exit):")
+    choice = int(input('> '))
+
+    if choice:
+        try:
+            cursor.execute("UPDATE Orders SET IsDone = 1 WHERE OrderID = ? AND IsDone = 0", (choice,))
+            con.commit()
+        
+
+
     input("(Press Enter to exit)")
     dashboards.employeeDashboard(con, cursor, username)
