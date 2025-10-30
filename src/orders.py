@@ -84,7 +84,7 @@ def placeOrder(con, cursor, username, order = None):
 def viewMyOrders(con, cursor, username):
     UserID = auth.fetchUserID(cursor, username)[0]
     cursor.execute("""
-    SELECT o.OrderID, b.BurgerName, o.Status
+    SELECT o.OrderID, b.Name, o.IsDone
     FROM Orders o
     JOIN Burgers b ON o.BurgerID = b.BurgerID
     WHERE o.UserID = ?
