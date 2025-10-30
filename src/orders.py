@@ -109,7 +109,7 @@ def viewMyOrders(con, cursor, username):
                 print(f"- {burger_name:<{22}} | [Done]")
             else:
                 print(f"- {burger_name:<{22}} | [Preparing..]")
-                
         print()
     print("-" * 50)
     input("(Press Enter to exit)")
+    dashboards.customerDashboard(con, cursor, username)
