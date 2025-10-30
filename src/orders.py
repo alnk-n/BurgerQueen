@@ -83,7 +83,13 @@ def placeOrder(con, cursor, username, order = None):
 
 def viewMyOrders(con, cursor, username):
     UserID = auth.fetchUserID(cursor, username)[0]
-    cursor.execute("SELECT OrderID, BurgerID FROM Orders WHERE UserID = ?", (UserID,))
+    cursor.execute("""
+    SELECT o.OrderID, b.BurgerName, o.Status
+    FROM Orders o
+    JOIN Burgers b ON o.BurgerID = b.BurgerID
+    WHERE o.UserID = ?
+    ORDER BY o.OrderID
+    """, (UserID,))
     rows = cursor.fetchall()
 
     ordersDictionary = {}
