@@ -94,10 +94,10 @@ def viewMyOrders(con, cursor, username):
 
     ordersDictionary = {}
 
-    for OrderID, BurgerID in rows:
+    for OrderID, BurgerName, status in rows:
         if OrderID not in ordersDictionary:
             ordersDictionary[OrderID] = []
-        ordersDictionary[OrderID].append(BurgerID)
+        ordersDictionary[OrderID].append((BurgerName, status))
     
     print("Your orders:")
     print("-"*50)
