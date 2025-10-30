@@ -1,3 +1,6 @@
+from argon2 import PasswordHasher
+ph = PasswordHasher()
+
 from utils import returnCheck
 import dashboards
 
@@ -47,11 +50,16 @@ def loginUser(con, cursor, exceptionMessage):
                 
     print('Input password.')
     inputPassword = input('> ')
+
     cursor.execute("SELECT Password FROM Users WHERE Username = ?", (inputUsername,))
-    userPassword = cursor.fetchone()
-    if userPassword and userPassword[0] == inputPassword: # Checks if password matches the database in matching row
-        print("Login successful!")
-        dashboards.redirectUserDashboard(con, cursor, inputUsername)
+    userPasswordHash = cursor.fetchone()
+
+    if userPasswordHash:
+        try:
+            ph.verify(userPasswordHash[0], inputPassword)
+            print("Login successful!")
+            dashboards.redirectUserDashboard(con, cursor, inputUsername)
+        except argon2.exceptions.VerifyMismatchError:
     else:
         loginUser(con, cursor, 'Invalid username or password.')
 
