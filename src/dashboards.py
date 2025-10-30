@@ -51,7 +51,7 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
             elif choice == 2:
                 orders.viewAllOrders(con, cursor, username)
             elif choice == 3:
-                inventory.showInventory(con, cursor)
+                inventory.viewInventory(con, cursor, username)
             elif choice == 4:
                 print('\n'*10)
                 print('-'*50)
