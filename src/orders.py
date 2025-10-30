@@ -1,4 +1,4 @@
-from auth import fetchUserID
+import auth
 import dashboards
 
 
@@ -66,7 +66,7 @@ def placeOrder(con, cursor, username, order = None):
         except ValueError:
             print('Invalid input. Please enter a number.')
 
-    UserID = fetchUserID(cursor, username)[0]
+    UserID = auth.fetchUserID(cursor, username)[0]
     burgerIDs = fetchBurgerIDs(cursor, order)
 
     cursor.execute("SELECT MAX(OrderID) FROM Orders")
@@ -82,4 +82,7 @@ def placeOrder(con, cursor, username, order = None):
 
 
 def viewMyOrders(con, cursor, username):
-    pass
+    UserID = auth.fetchUserID(cursor, username)
+    cursor.execute("SELECT OrderID FROM Users WHERE UserID = ?", (UserID,))
+    UserOrderIDs = cursor.fetchone()
+    cursor.execute("SELECT OrderID, BurgerID FROM Orders WHERE UserID = ?", (UserID,))
