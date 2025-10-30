@@ -76,7 +76,7 @@ def customerDashboard(con, cursor, username, exceptionMessage = None):
             if choice == 1:
                 orders.placeOrder(con, cursor, username)
             elif choice == 2:
-                orders.viewMyOrders(cursor, username)
+                orders.viewMyOrders(con, cursor, username)
             elif choice == 3:
                 print('\n'*10)
                 print('-'*50)

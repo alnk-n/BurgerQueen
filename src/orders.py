@@ -82,7 +82,17 @@ def placeOrder(con, cursor, username, order = None):
 
 
 def viewMyOrders(con, cursor, username):
-    UserID = auth.fetchUserID(cursor, username)
-    cursor.execute("SELECT OrderID FROM Users WHERE UserID = ?", (UserID,))
-    UserOrderIDs = cursor.fetchone()
+    UserID = auth.fetchUserID(cursor, username)[0]
     cursor.execute("SELECT OrderID, BurgerID FROM Orders WHERE UserID = ?", (UserID,))
+    rows = cursor.fetchall()
+
+    ordersDictionary = {}
+
+    for OrderID, BurgerID in rows:
+        if OrderID not in ordersDictionary:
+            ordersDictionary[OrderID] = []
+        ordersDictionary[OrderID].append(BurgerID)
+    
+    print("Your orders:")
+    print("-"*50)
+    print(ordersDictionary)
