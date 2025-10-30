@@ -99,11 +99,17 @@ def viewMyOrders(con, cursor, username):
             ordersDictionary[OrderID] = []
         ordersDictionary[OrderID].append((BurgerName, status))
     
+    print('-'*50)
     print("Your orders:")
+    print('-'*50)
     for OrderID, items in ordersDictionary.items():
-        print(f"Order Number #{OrderID}        | Status")
+        print(f"Order Number #{OrderID:<{10}} | Status")
         for burger_name, status in items:
-            print(f"- {burger_name:<22} | [{status}]")
+            if status == 1:
+                print(f"- {burger_name:<{22}} | [Done]")
+            else:
+                print(f"- {burger_name:<{22}} | [Preparing..]")
+                
         print()
     print("-" * 50)
     input("(Press Enter to exit)")
