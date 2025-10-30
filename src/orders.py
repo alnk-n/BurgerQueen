@@ -113,3 +113,37 @@ def viewMyOrders(con, cursor, username):
     print("-" * 50)
     input("(Press Enter to exit)")
     dashboards.customerDashboard(con, cursor, username)
+
+
+
+def viewAllOrders(con, cursor):
+    cursor.execute("""
+    SELECT o.OrderID, u.Username, b.Name, o.IsDone
+    FROM Orders o
+    JOIN Burgers b ON o.BurgerID = b.BurgerID
+    JOIN Users u ON o.UserID = u.UserID
+    ORDER BY o.OrderID
+    """)
+    rows = cursor.fetchall()
+
+    ordersDictionary = {}
+
+    for OrderID, BurgerName, status in rows:
+        if OrderID not in ordersDictionary:
+            ordersDictionary[OrderID] = []
+        ordersDictionary[OrderID].append((BurgerName, status))
+    
+    print('-'*50)
+    print("Your orders:")
+    print('-'*50)
+    for OrderID, items in ordersDictionary.items():
+        print(f"Order Number #{OrderID:<{10}} | Status")
+        for burger_name, status in items:
+            if status == 1:
+                print(f"- {burger_name:<{22}} | [Done]")
+            else:
+                print(f"- {burger_name:<{22}} | [Preparing..]")
+        print()
+    print("-" * 50)
+    input("(Press Enter to exit)")
+    dashboards.customerDashboard(con, cursor, username)
