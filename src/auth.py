@@ -1,3 +1,6 @@
+import argon2
+ph = argon2.PasswordHasher()
+
 from utils import returnCheck
 import dashboards
 
@@ -47,11 +50,16 @@ def loginUser(con, cursor, exceptionMessage):
                 
     print('Input password.')
     inputPassword = input('> ')
+
     cursor.execute("SELECT Password FROM Users WHERE Username = ?", (inputUsername,))
-    userPassword = cursor.fetchone()
-    if userPassword and userPassword[0] == inputPassword: # Checks if password matches the database in matching row
-        print("Login successful!")
-        dashboards.redirectUserDashboard(con, cursor, inputUsername)
+    userPasswordHash = cursor.fetchone()
+
+    if userPasswordHash:
+        try:
+            ph.verify(userPasswordHash[0], inputPassword)
+            dashboards.redirectUserDashboard(con, cursor, inputUsername)
+        except argon2.exceptions.VerifyMismatchError:
+            loginUser(con, cursor, 'Invalid username or password.')
     else:
         loginUser(con, cursor, 'Invalid username or password.')
 
@@ -83,7 +91,10 @@ def createUser(con, cursor, inputUsername=None, exceptionMessage=None):
         inputPassword = input('> ')
         if returnCheck(inputPassword):
             dashboards.homePage(con, cursor) # Return to main menu if Enter is pressed
-        cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, inputPassword)) # Store the new user
+        
+        hashedPassword = ph.hash(inputPassword)
+
+        cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, hashedPassword)) # Store the new user
         con.commit()  # Commit to save the new user
         print(f'Account "{inputUsername}" created successfully!')
         dashboards.redirectUserDashboard(con, cursor, inputUsername)
