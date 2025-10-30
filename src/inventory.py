@@ -19,3 +19,6 @@ def updateInventory(con, cursor, order):
             cursor.execute("UPDATE Ingredients SET AmountInStock = AmountInStock - ? WHERE IngredientID = ?", (amount, ingredientID))
 
     con.commit()
+
+def viewInventory(con, cursor, username):
+    pass
