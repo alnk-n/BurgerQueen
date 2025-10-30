@@ -1,3 +1,5 @@
+# inventory.py
+
 def updateInventory(con, cursor, order):
     items = order.split(',') if order else []
 

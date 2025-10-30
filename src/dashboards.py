@@ -1,10 +1,11 @@
 # dashboards.py
-import orders
+
+import orders # import the 'orders.py' file for order-related functions (make order, list all orders, list ongoing orders)
 
 
 def homePage(con, cursor):
 
-    import auth
+    import auth # import login and register functions from auth.py
 
     print('\n'*20)
     print('HELLO, AND WELCOME TO BURGER QUEEN. CHOOSE AN ALTERNATIVE:')
@@ -13,7 +14,7 @@ def homePage(con, cursor):
         try:
             valg = int(input('> '))
             if valg == 1:
-                auth.loginUser(con, cursor, exceptionMessage=None)
+                auth.loginUser(con, cursor, None) # sends None as 'exceptionMessage' which is used to give feedback to user in exceptions
                 return
             elif valg == 2:
                 auth.createUser(con, cursor)
@@ -27,10 +28,12 @@ def homePage(con, cursor):
 
 
 def redirectUserDashboard(con, cursor, username):
+    # checks whether provided username is registered as an employee
     cursor.execute("SELECT IsEmployee FROM Users WHERE Username = ?", (username,))
     employeeStatus = cursor.fetchone()
-    if employeeStatus and employeeStatus[0] == 1:
-        employeeDashboard(con, cursor, username)
+    
+    if employeeStatus and employeeStatus[0] == 1: # if column is filled in and True
+        employeeDashboard(con, cursor, username) # i pass around usernames 
     else:
         customerDashboard(con, cursor, username, 'Login successful.')
 
