@@ -194,7 +194,14 @@ def viewOngoingOrders(con, cursor, username):
         try:
             cursor.execute("UPDATE Orders SET IsDone = 1 WHERE OrderID = ? AND IsDone = 0", (choice,))
             con.commit()
-        
+            
+            if cursor.rowcount > 0:
+                print(f"Order #{choice} has been marked as complete.")
+            else:
+                print(f"Order #{choice} not found or already completed.")
+
+        except ValueError:
+            print("Invalid input. Please enter a valid order number.")
 
 
     input("(Press Enter to exit)")
