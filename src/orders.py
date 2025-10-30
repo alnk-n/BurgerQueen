@@ -76,7 +76,7 @@ def placeOrder(con, cursor, username, order = None):
     for burgerID in burgerIDs:
         cursor.execute("INSERT INTO Orders (OrderID, UserID, BurgerID) VALUES (?, ?, ?)", (newOrderID, UserID, burgerID))
     con.commit()
-    
+
     listSelection(order)
     dashboards.customerDashboard(con, cursor, username, "nospace")
 
@@ -135,15 +135,13 @@ def viewAllOrders(con, cursor, username):
         if OrderID not in ordersDictionary:
             ordersDictionary[OrderID] = {'User': User, 'Items': []}
         ordersDictionary[OrderID]['Items'].append((BurgerName, status))
-    
-    print(ordersDictionary)
 
     print('-'*50)
     print("All orders:")
     print('-'*50)
     for OrderID, items in ordersDictionary.items():
         print(f"Order Number #{OrderID:<{10}} | Status")
-        print(f"Ordered by: {User}")
+        print(f"Ordered by: {items['User']:<{13}} |")
         for burger_name, status in items['Items']:
             if status == 1:
                 print(f"- {burger_name:<{22}} | [Done]")
