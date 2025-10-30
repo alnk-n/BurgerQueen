@@ -164,7 +164,7 @@ def viewOngoingOrders(con, cursor, username):
     rows = cursor.fetchall()
 
     if not rows:
-        dashboards.employeeDashboard(con, cursor, username, 'Whoops! There are no orders in the database.')
+        dashboards.employeeDashboard(con, cursor, username, 'Phew! There are no ongoing orders.')
 
     ordersDictionary = {}
 
@@ -195,14 +195,17 @@ def viewOngoingOrders(con, cursor, username):
             cursor.execute("UPDATE Orders SET IsDone = 1 WHERE OrderID = ? AND IsDone = 0", (choice,))
             con.commit()
             
+            print('\n'*20)
+            print('-'*50)
             if cursor.rowcount > 0:
                 print(f"Order #{choice} has been marked as complete.")
+                viewOngoingOrders(con, cursor, username)
             else:
                 print(f"Order #{choice} not found or already completed.")
+                viewOngoingOrders(con, cursor, username)
 
         except ValueError:
             print("Invalid input. Please enter a valid order number.")
-
 
     input("(Press Enter to exit)")
     dashboards.employeeDashboard(con, cursor, username)
