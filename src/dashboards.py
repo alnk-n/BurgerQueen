@@ -42,6 +42,7 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
     print('-' *50)
     print(f'Hello {username}! Choose an option:')
     print('[1] View ongoing orders\n[2] View all orders\n[3] See ingredient inventory\n[4] Log out')
+    import inventory
     while True:
         try:
             choice = int(input('> '))
@@ -50,7 +51,7 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
             elif choice == 2:
                 orders.viewAllOrders(con, cursor, username)
             elif choice == 3:
-                showIngredientInventory(con, cursor)
+                inventory.showInventory(con, cursor)
             elif choice == 4:
                 print('\n'*10)
                 print('-'*50)
@@ -87,7 +88,3 @@ def customerDashboard(con, cursor, username, exceptionMessage = None):
                 print('Invalid value. Order food with [1], See order status with [2], and Log out with [3]')
         except ValueError:
             print('Invalid input. Please enter a number.')
-
-
-def showIngredientInventory(con, cursor):
-    pass
