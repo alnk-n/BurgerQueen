@@ -222,5 +222,4 @@ def viewOngoingOrders(con, cursor, username):
         except ValueError:
             print("Invalid input. Please enter a valid order number.")
 
-    input("(Press Enter to exit)")
     dashboards.employeeDashboard(con, cursor, username)
