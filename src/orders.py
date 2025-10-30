@@ -197,6 +197,18 @@ def viewOngoingOrders(con, cursor, username):
             cursor.execute("UPDATE Orders SET IsDone = 1 WHERE OrderID = ? AND IsDone = 0", (choice,))
             con.commit()
             
+            cursor.execute("""
+                SELECT b.Name
+                FROM Orders o
+                JOIN Burgers b ON o.BurgerID = b.BurgerID
+                WHERE o.OrderID = ?
+            """, (choice,))
+            burgers = [row[0] for row in cursor.fetchall()]
+            orderItems = ', '.join(burgers)
+
+            import inventory
+            inventory.updateInventory(con, cursor, orderItems)
+
             print('\n'*20)
             print('-'*50)
             if cursor.rowcount > 0:
@@ -204,10 +216,10 @@ def viewOngoingOrders(con, cursor, username):
                 viewOngoingOrders(con, cursor, username)
             else:
                 print(f"Order #{choice} not found or already completed.")
-                viewOngoingOrders(con, cursor, username)
+                
+            viewOngoingOrders(con, cursor, username)
 
         except ValueError:
             print("Invalid input. Please enter a valid order number.")
 
-    input("(Press Enter to exit)")
     dashboards.employeeDashboard(con, cursor, username)
