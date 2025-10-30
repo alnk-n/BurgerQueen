@@ -1,4 +1,4 @@
-from auth import fetchUserID
+import auth
 import dashboards
 
 
@@ -18,16 +18,15 @@ def fetchBurgerIDs(cursor, order):
 
 
 def listSelection(order):
+    print('\n'*20)
     print('-'*50)
-    print('Your Order')
+    print('Your order was successfully processed!\nYou can always check its status from the "See order status" page.')
     print('-'*50)
 
     orderItems = order.split(",") if order else [] # split the order string using commas, into a list of items
     uniqueItems = set(orderItems) # use a set to find unique items
     for item in uniqueItems:
         print(f"{orderItems.count(item)}x {item}")
-    
-    print('-'*50)
 
 
 def addToOrder(order, item):
@@ -66,17 +65,51 @@ def placeOrder(con, cursor, username, order = None):
                 print('Invalid value. Select items with 1-3, confirm with 4 or quit with 5.')
         except ValueError:
             print('Invalid input. Please enter a number.')
-    
-    listSelection(order)
 
-    UserID = fetchUserID(cursor, username)[0]
+    UserID = auth.fetchUserID(cursor, username)[0]
     burgerIDs = fetchBurgerIDs(cursor, order)
 
+    cursor.execute("SELECT MAX(OrderID) FROM Orders")
+    lastOrder = cursor.fetchone()[0]
+    newOrderID = (lastOrder or 0) + 1
+
     for burgerID in burgerIDs:
-        cursor.execute("INSERT INTO Orders (UserID, BurgerID) VALUES (?, ?)", (UserID, burgerID))
-        con.commit()
-    dashboards.customerDashboard(con, cursor, username, 'Order sent. You can always check its status on the "See order status" page.')
+        cursor.execute("INSERT INTO Orders (OrderID, UserID, BurgerID) VALUES (?, ?, ?)", (newOrderID, UserID, burgerID))
+    con.commit()
+    
+    listSelection(order)
+    dashboards.customerDashboard(con, cursor, username, "nospace")
 
 
-def showOrderStatus(con, cursor, username):
-    pass
+def viewMyOrders(con, cursor, username):
+    UserID = auth.fetchUserID(cursor, username)[0]
+    cursor.execute("""
+    SELECT o.OrderID, b.Name, o.IsDone
+    FROM Orders o
+    JOIN Burgers b ON o.BurgerID = b.BurgerID
+    WHERE o.UserID = ?
+    ORDER BY o.OrderID
+    """, (UserID,))
+    rows = cursor.fetchall()
+
+    ordersDictionary = {}
+
+    for OrderID, BurgerName, status in rows:
+        if OrderID not in ordersDictionary:
+            ordersDictionary[OrderID] = []
+        ordersDictionary[OrderID].append((BurgerName, status))
+    
+    print('-'*50)
+    print("Your orders:")
+    print('-'*50)
+    for OrderID, items in ordersDictionary.items():
+        print(f"Order Number #{OrderID:<{10}} | Status")
+        for burger_name, status in items:
+            if status == 1:
+                print(f"- {burger_name:<{22}} | [Done]")
+            else:
+                print(f"- {burger_name:<{22}} | [Preparing..]")
+        print()
+    print("-" * 50)
+    input("(Press Enter to exit)")
+    dashboards.customerDashboard(con, cursor, username)

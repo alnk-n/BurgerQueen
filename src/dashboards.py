@@ -62,8 +62,12 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
 
 
 def customerDashboard(con, cursor, username, exceptionMessage = None):
-    print('\n'*20)
-    if exceptionMessage:
+    if exceptionMessage == "nospace":
+        pass
+    elif exceptionMessage == None:
+        print('\n'*20)
+    else:
+        print('\n'*20)
         print(exceptionMessage)
     print('-' *50)
     print(f'Hello {username}! Choose an option:')
@@ -74,7 +78,7 @@ def customerDashboard(con, cursor, username, exceptionMessage = None):
             if choice == 1:
                 orders.placeOrder(con, cursor, username)
             elif choice == 2:
-                orders.showOrderStatus(cursor, username)
+                orders.viewMyOrders(con, cursor, username)
             elif choice == 3:
                 print('\n'*10)
                 print('-'*50)
