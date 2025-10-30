@@ -141,7 +141,7 @@ def viewAllOrders(con, cursor, username):
     print('-'*50)
     for OrderID, items in ordersDictionary.items():
         print(f"Order Number #{OrderID:<{10}} | Status")
-        print(f"Ordered by: {items['User']:<{13}} |")
+        print(f"Ordered by: {items['User']:<{12}} |")
         for burger_name, status in items['Items']:
             if status == 1:
                 print(f"- {burger_name:<{22}} | [Done]")
@@ -150,4 +150,4 @@ def viewAllOrders(con, cursor, username):
         print()
     print("-" * 50)
     input("(Press Enter to exit)")
-    dashboards.employeeDashboard(con, cursor)
+    dashboards.employeeDashboard(con, cursor, username)
