@@ -1,5 +1,5 @@
-from argon2 import PasswordHasher
-ph = PasswordHasher()
+import argon2
+ph = argon2.PasswordHasher()
 
 from utils import returnCheck
 import dashboards
@@ -60,6 +60,7 @@ def loginUser(con, cursor, exceptionMessage):
             print("Login successful!")
             dashboards.redirectUserDashboard(con, cursor, inputUsername)
         except argon2.exceptions.VerifyMismatchError:
+            loginUser(con, cursor, 'Invalid username or password.')
     else:
         loginUser(con, cursor, 'Invalid username or password.')
 
