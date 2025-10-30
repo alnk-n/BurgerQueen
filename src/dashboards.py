@@ -46,7 +46,7 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
         try:
             choice = int(input('> '))
             if choice == 1:
-                orders.viewOngoingOrders(con, cursor)
+                orders.viewOngoingOrders(con, cursor, username)
             elif choice == 2:
                 orders.viewAllOrders(con, cursor, username)
             elif choice == 3:
