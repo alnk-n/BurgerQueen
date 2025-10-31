@@ -4,7 +4,7 @@ import orders # import functions for making orders, and listing all/ongoing orde
 
 # homePage displays the welcome screen and lets the user choose whether to log in, register, or exit
 # Arguments:
-# con: used for referring to database
+# con: only passed around because homePage needs it if called again
 # cursor: used for querying the database
 def homePage(con, cursor):
 
@@ -32,7 +32,7 @@ def homePage(con, cursor):
 
 # redirectUserDashboard opens the correct 'dashboard' based on the provided username's employee status
 # Arguments:
-# con: used for referring to database
+# con: only passed around because homePage needs it if called again
 # cursor: used for querying the database
 # username: used for identifying the currently logged-in user
 def redirectUserDashboard(con, cursor, username):
@@ -47,7 +47,7 @@ def redirectUserDashboard(con, cursor, username):
 
 # Employee dashboard. Displays menu used for choosing to view ongoing/all orders, and to list the ingredient stock
 # Arguments:
-# con: used for referring to database
+# con: only passed around because homePage needs it if called again
 # cursor: used for querying the database
 # username: used for identifying currently logged-in user
 # exceptionMessage: used for displaying additional feedback. Results in cleaner terminal GUI.
@@ -83,7 +83,7 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
 
 # Customer dashboard. Displays menu used for placing orders and seeing the status of all personal orders 
 # Arguments:
-# con: used for referring to database
+# con: only passed around because homePage needs it if called again
 # cursor: used for querying the database
 # username: used for identifying currently logged-in user
 # exceptionMessage: used for displaying additional feedback
