@@ -4,7 +4,7 @@ import orders # import functions for making orders, and listing all/ongoing orde
 
 # homePage displays the welcome screen and lets the user choose whether to log in, register, or exit
 # Arguments:
-# con: only passed around because homePage needs it if called again
+# con: used to close database on program exit, gets passed around for when homePage is called again
 # cursor: used for querying the database
 def homePage(con, cursor):
 
@@ -23,6 +23,7 @@ def homePage(con, cursor):
                 auth.createUser(con, cursor)
                 return
             elif valg == 3:
+                con.close()
                 exit()
             else:
                 print('Invalid value. Select option 1, 2 or 3.')
