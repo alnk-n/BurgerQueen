@@ -1,8 +1,11 @@
 # dashboards.py
 
-import orders # import the 'orders.py' file for order-related functions (make order, list all orders, list ongoing orders)
+import orders # import functions for making orders, and listing all/ongoing orders
 
-
+# homePage displays the welcome screen and lets the user choose whether to log in, register, or exit
+# Arguments:
+# con: used for referring to database
+# cursor: used for querying the database
 def homePage(con, cursor):
 
     import auth # import login and register functions from auth.py
@@ -14,7 +17,7 @@ def homePage(con, cursor):
         try:
             valg = int(input('> '))
             if valg == 1:
-                auth.loginUser(con, cursor, None) # sends None as 'exceptionMessage' which is used to give feedback to user in exceptions
+                auth.loginUser(con, cursor, None) # 'None' argument is for 'exceptionMessage', used for feedback
                 return
             elif valg == 2:
                 auth.createUser(con, cursor)
@@ -27,34 +30,45 @@ def homePage(con, cursor):
             print('Invalid input. Please enter a number.')
 
 
+# redirectUserDashboard opens the correct 'dashboard' based on the provided username's employee status
+# Arguments:
+# con: used for referring to database
+# cursor: used for querying the database
+# username: used for identifying the currently logged-in user
 def redirectUserDashboard(con, cursor, username):
-    # checks whether provided username is registered as an employee
     cursor.execute("SELECT IsEmployee FROM Users WHERE Username = ?", (username,))
     employeeStatus = cursor.fetchone()
     
     if employeeStatus and employeeStatus[0] == 1: # if column is filled in and True
-        employeeDashboard(con, cursor, username) # i pass around usernames 
+        employeeDashboard(con, cursor, username)
     else:
         customerDashboard(con, cursor, username, 'Login successful.')
 
 
+# Employee dashboard. Displays menu used for choosing to view ongoing/all orders, and to list the ingredient stock
+# Arguments:
+# con: used for referring to database
+# cursor: used for querying the database
+# username: used for identifying currently logged-in user
+# exceptionMessage: used for displaying additional feedback. Results in cleaner terminal GUI.
 def employeeDashboard(con, cursor, username, exceptionMessage = None):
     print('\n'*20)
     if exceptionMessage:
-        print(exceptionMessage)
+        print(exceptionMessage) # example: 'Whoops! There are no orders in the database.'
     print('-' *50)
+
     print(f'Hello {username}! Choose an option:')
     print('[1] View ongoing orders\n[2] View all orders\n[3] See ingredient inventory\n[4] Log out')
-    import inventory
+    from inventory import viewInventory # import from inventory.py file
     while True:
         try:
             choice = int(input('> '))
             if choice == 1:
-                orders.viewOngoingOrders(con, cursor, username)
+                orders.viewOngoingOrders(con, cursor, username) # username is passed as an argument so that it can be passed back here when done. This was a cleaner solution than using a global variable.
             elif choice == 2:
                 orders.viewAllOrders(con, cursor, username)
             elif choice == 3:
-                inventory.viewInventory(con, cursor, username)
+                viewInventory(con, cursor, username)
             elif choice == 4:
                 print('\n'*10)
                 print('-'*50)
@@ -66,7 +80,14 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
             print('Invalid input. Please enter a number.')
 
 
-def customerDashboard(con, cursor, username, exceptionMessage = None):
+
+# Customer dashboard. Displays menu used for placing orders and seeing the status of all personal orders 
+# Arguments:
+# con: used for referring to database
+# cursor: used for querying the database
+# username: used for identifying currently logged-in user
+# exceptionMessage: used for displaying additional feedback
+def customerDashboard(con, cursor, username, exceptionMessage = None): # assumes exceptionMessage is None if not provided
     if exceptionMessage == "nospace":
         pass
     elif exceptionMessage == None:
