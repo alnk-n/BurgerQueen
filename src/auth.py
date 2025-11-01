@@ -101,20 +101,26 @@ def loginUser(con, cursor, exceptionMessage):
         return
 
 
+# Handles creation of account. Checks username availability, and hashed input password before storing the new account in DB.
+# Arguments:
+# con: used for passing database connection along, used for homePage
+# cursor: used for querying the database
+# inputUsername: used for gracefully using the already input username from the loginUser() function, only requiring the input of a new password.
+# exceptionMessage: used internally for extra feedback to the user (e.g. 'This username is already taken. Please choose another.')
 def createUser(con, cursor, inputUsername=None, exceptionMessage=None):
     print('\n'*20)
     print('-' *50)
     if exceptionMessage:
-        print(exceptionMessage)
-    # Provides account name upon creation if sent from loginUser() function
-    if inputUsername:
-        print(f'Create a new account called "{inputUsername}".')
+        print(exceptionMessage) # cleaner solution for error message (e.g. 'Invalid username or password.')
+    
+    if inputUsername: # if there's an input username provided by the loginUser() function
+        print(f'Create a new account called "{inputUsername}".') # create a new account under that username, require input of new password
     else:
-        print('Create a new account.')
+        print('Create a new account.') # standard title printout if not called from loginUser() function
     print('(Press Enter to return)')
     print('-'*50)
 
-    # If no value is provided through inputUsername, ask for username
+    # 'Body text'. If no value is provided through inputUsername, ask for new username input
     if not inputUsername:
         print('Enter a username for your new account: ')
         inputUsername = input('> ')
@@ -123,16 +129,17 @@ def createUser(con, cursor, inputUsername=None, exceptionMessage=None):
             return
 
     if checkExistingUser(cursor, inputUsername):
-        createUser(con, cursor, None, 'This username is already taken. Please choose another.')  # Retry if username already exists
+        createUser(con, cursor, None, 'This username is already taken. Please choose another.')  # Rerun function if username already exists with graceful exceptionMessage
     else:
         print('Enter a password for your new account:')
         inputPassword = input('> ')
         if returnCheck(inputPassword):
-            dashboards.homePage(con, cursor) # Return to main menu if Enter is pressed
+            dashboards.homePage(con, cursor) # return to main menu if nothing is input (if Pressed Enter)
         
-        hashedPassword = ph.hash(inputPassword)
+        hashedPassword = ph.hash(inputPassword) # hashes newly input password
 
-        cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, hashedPassword)) # Store the new user
-        con.commit()  # Commit to save the new user
+        # store the new user
+        cursor.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", (inputUsername, hashedPassword))
+        con.commit()
         print(f'Account "{inputUsername}" created successfully!')
-        dashboards.redirectUserDashboard(con, cursor, inputUsername)
+        dashboards.redirectUserDashboard(con, cursor, inputUsername) # redirects to correct dashboard after account creation
