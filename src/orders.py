@@ -236,7 +236,10 @@ def viewOngoingOrders(con, cursor, username):
                 JOIN Burgers b ON o.BurgerID = b.BurgerID
                 WHERE o.OrderID = ?
             """, (choice,))
-            burgers = [row[0] for row in cursor.fetchall()]
+            
+            # create a string separated with commas of all the burger names for the marked order
+            # this is passed to the updateInventory() function to subract used ingredients from inventory
+            burgers = [row[0] for row in cursor.fetchall()] # 
             orderItems = ', '.join(burgers)
 
             import inventory
