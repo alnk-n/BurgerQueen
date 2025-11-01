@@ -13,7 +13,7 @@ def fetchBurgerIDs(cursor, order):
     burgerIDs = []
 
     for burgerName in burgerNamesList:
-        cursor.execute("SELECT BurgerID FROM Burgers WHERE Name = ?", (burgerName,))
+        cursor.execute("SELECT BurgerID FROM Burgers WHERE Name = ?", (burgerName,)) # queries for burger ID using its corresponding name
         result = cursor.fetchone()
         
         if result:
@@ -50,7 +50,6 @@ def placeOrder(con, cursor, username, order = None):
     print('-' *50)
     
     print('[1] Whopper Queen\n[2] Triple Cheesy Princess\n[3] Kingdom Fries\n[4] Confirm order\n[5] Return')
-    import inventory
     while True:
         try:
             choice = int(input('> '))
@@ -84,7 +83,6 @@ def placeOrder(con, cursor, username, order = None):
         cursor.execute("INSERT INTO Orders (OrderID, UserID, BurgerID) VALUES (?, ?, ?)", (newOrderID, UserID, burgerID))
     con.commit()
 
-    inventory.updateInventory(con, cursor, order)
     listSelection(order)
     dashboards.customerDashboard(con, cursor, username, "nospace")
 
