@@ -101,24 +101,28 @@ def placeOrder(con, cursor, username, order = None):
     listSelection(order) # order confirmation printout
     dashboards.customerDashboard(con, cursor, username, "nospace") # returns to customer dashboard. "nospace" argument prevents newline printout in the customerDashboard function.
 
-
+# Fetches and displays the orders placed by the currently logged-in user, showing their status
+# Arguments:
+# con: used for passing database connection along for homePage
+# cursor: used to execute database queries
+# username: identifies the currently logged-in user
 def viewMyOrders(con, cursor, username):
-    UserID = auth.fetchUserID(cursor, username)[0]
+    UserID = auth.fetchUserID(cursor, username)[0] # converts username to UserID
     cursor.execute("""
     SELECT o.OrderID, b.Name, o.IsDone
     FROM Orders o
     JOIN Burgers b ON o.BurgerID = b.BurgerID
     WHERE o.UserID = ?
     ORDER BY o.OrderID
-    """, (UserID,))
+    """, (UserID,)) # fetch orders for this user and include burger names
     rows = cursor.fetchall()
 
-    ordersDictionary = {}
+    ordersDictionary = {} # map OrderID to dictionary of (BurgerName, status)
 
     for OrderID, BurgerName, status in rows:
         if OrderID not in ordersDictionary:
             ordersDictionary[OrderID] = []
-        ordersDictionary[OrderID].append((BurgerName, status))
+        ordersDictionary[OrderID].append((BurgerName, status)) # append each burger and its status to the order dictionary
     
     print('-'*50)
     print("Your orders:")
@@ -133,7 +137,7 @@ def viewMyOrders(con, cursor, username):
         print()
     print("-" * 50)
     input("(Press Enter to exit)")
-    dashboards.customerDashboard(con, cursor, username)
+    dashboards.customerDashboard(con, cursor, username) # return to customer dashboard
 
 
 def viewAllOrders(con, cursor, username):
