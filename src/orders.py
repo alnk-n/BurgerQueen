@@ -180,7 +180,11 @@ def viewAllOrders(con, cursor, username):
     input("(Press Enter to exit)")
     dashboards.employeeDashboard(con, cursor, username) # return to employe dashboard
 
-
+# Shows ongoing orders (only not done) and allows employee to mark an order as complete. Calls updateInventoy afterwards to subract used ingredients from inventory
+# Arguments:
+# con: database connection used for commits and passing to homePage function
+# cursor: used to execute database queries
+# username: username of the logged-in employee using the dashboard
 def viewOngoingOrders(con, cursor, username):
     cursor.execute("""
     SELECT o.OrderID, u.Username, b.Name, o.IsDone
@@ -189,13 +193,13 @@ def viewOngoingOrders(con, cursor, username):
     JOIN Users u ON o.UserID = u.UserID
     WHERE o.IsDone = 0
     ORDER BY o.OrderID
-    """)
+    """) # only fetch orders that are not completed (Username of the owner, BurgerName and Status)
     rows = cursor.fetchall()
 
     if not rows:
         dashboards.employeeDashboard(con, cursor, username, 'Phew! There are no ongoing orders.')
 
-    ordersDictionary = {}
+    ordersDictionary = {} # map OrderID to dictionary of Username key and value = list of [BurgerName, Status]
 
     for OrderID, User, BurgerName, status in rows:
         if OrderID not in ordersDictionary:
@@ -216,11 +220,13 @@ def viewOngoingOrders(con, cursor, username):
         print()
     print("-" * 50)
 
+    # code below is responsible for letting the employee mark orders as complete
     print("Enter the order number to mark it as complete (or press Enter to exit):")
-    choice = int(input('> '))
+    choice = int(input('> ')) # read chosen order number
 
     if choice:
         try:
+            # mark all items in the order as done
             cursor.execute("UPDATE Orders SET IsDone = 1 WHERE OrderID = ? AND IsDone = 0", (choice,))
             con.commit()
             
@@ -234,19 +240,18 @@ def viewOngoingOrders(con, cursor, username):
             orderItems = ', '.join(burgers)
 
             import inventory
-            inventory.updateInventory(con, cursor, orderItems)
+            inventory.updateInventory(con, cursor, orderItems) # update inventory based on completed order
 
             print('\n'*20)
             print('-'*50)
             if cursor.rowcount > 0:
                 print(f"Order #{choice} has been marked as complete.")
-                viewOngoingOrders(con, cursor, username)
             else:
                 print(f"Order #{choice} not found or already completed.")
                 
-            viewOngoingOrders(con, cursor, username)
+            viewOngoingOrders(con, cursor, username) # refresh the ongoing orders view
 
         except ValueError:
             print("Invalid input. Please enter a valid order number.")
 
-    dashboards.employeeDashboard(con, cursor, username)
+    dashboards.employeeDashboard(con, cursor, username) # return to employee dashboard
