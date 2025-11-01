@@ -89,7 +89,7 @@ def employeeDashboard(con, cursor, username, exceptionMessage = None):
 # username: used for identifying currently logged-in user
 # exceptionMessage: used for displaying additional feedback
 def customerDashboard(con, cursor, username, exceptionMessage = None): # assumes exceptionMessage is None if not provided
-    if exceptionMessage == "nospace":
+    if exceptionMessage == "nospace": # if 'nospace' string is provided, don't print newlines. Used for order confirmation after placing order.
         pass
     elif exceptionMessage == None:
         print('\n'*20)
