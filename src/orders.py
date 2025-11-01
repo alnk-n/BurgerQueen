@@ -1,11 +1,15 @@
 # orders.py
 
-import auth
-import dashboards
+import auth  # imports authentication functions
+import dashboards  # imports dashboard functions for user and employee dashboards
 
 
+# Function to fetch the BurgerIDs corresponding to the items in the order. Returns a list of BurgerIDs
+# Arguments:
+# cursor: used to execute database queries
+# order: a string of burger names separated by commas
 def fetchBurgerIDs(cursor, order):
-    burgerNamesList = order.split(',')
+    burgerNamesList = order.split(',') # convert comma-separated string to list
     burgerIDs = []
 
     for burgerName in burgerNamesList:
@@ -13,10 +17,10 @@ def fetchBurgerIDs(cursor, order):
         result = cursor.fetchone()
         
         if result:
-            burgerIDs.append(str(result[0]))
+            burgerIDs.append(str(result[0])) # if provided burger name exists in DB, return and append its ID to the list
         else:
             print(f'Burger "{burgerName}" not found in database.')
-    return burgerIDs
+    return burgerIDs # return ID list
 
 
 def listSelection(order):
