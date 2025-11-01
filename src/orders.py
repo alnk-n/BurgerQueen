@@ -26,7 +26,7 @@ def fetchBurgerIDs(cursor, order):
 def listSelection(order):
     print('\n'*20)
     print('-'*50)
-    print('Your order was successfully processed!\nYou can always check its status from the "See order status" page.')
+    print('Your order was successfully processed!\nYou can always check its status in the "See order status" page.')
     print('-'*50)
 
     orderItems = order.split(",") if order else [] # split the order string using commas, into a list of items
