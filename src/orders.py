@@ -23,6 +23,9 @@ def fetchBurgerIDs(cursor, order):
     return burgerIDs # return ID list
 
 
+# Returns clean terminal confirmation output with items provided by a concatinated order string
+# Arguments:
+# order: string consisting of unique item names separated by a comma (e.g. "Kingdom Fries,Triple Cheesy Princess,Kingdom Fries")
 def listSelection(order):
     print('\n'*20)
     print('-'*50)
@@ -35,6 +38,10 @@ def listSelection(order):
         print(f"{orderItems.count(item)}x {item}")
 
 
+# Takes in existing order string, and concatinates new item name separated by a comma
+# Arguments:
+# order: string consisting of unique item names separated by a comma (e.g. "Kingdom Fries,Triple Cheesy Princess,Kingdom Fries")
+# item: takes in item name and concatinates it to the order variable
 def addToOrder(order, item):
     if order:
         order += "," + item # if there's already items in the order, add comma before appending new item
