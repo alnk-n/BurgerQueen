@@ -1,3 +1,4 @@
 burgerqueen.db-journal
 src/__pycache__
 .venv
+.vscode
