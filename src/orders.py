@@ -139,7 +139,11 @@ def viewMyOrders(con, cursor, username):
     input("(Press Enter to exit)")
     dashboards.customerDashboard(con, cursor, username) # return to customer dashboard
 
-
+# Displays all orders to employees including who ordered each one
+# Arguments:
+# con: database connection passed for when returning to homePage
+# cursor: used to execute database queries
+# username: username of the employee using the dashboard
 def viewAllOrders(con, cursor, username):
     cursor.execute("""
     SELECT o.OrderID, u.Username, b.Name, o.IsDone
@@ -147,13 +151,13 @@ def viewAllOrders(con, cursor, username):
     JOIN Burgers b ON o.BurgerID = b.BurgerID
     JOIN Users u ON o.UserID = u.UserID
     ORDER BY o.OrderID
-    """)
+    """) # fetch all orders with user and burger info (+ their status)
     rows = cursor.fetchall()
 
     if not rows:
-        dashboards.employeeDashboard(con, cursor, username, 'Whoops! There are no orders in the database.')
+        dashboards.employeeDashboard(con, cursor, username, 'Whoops! There are no orders in the database.') # handle empty DB
 
-    ordersDictionary = {}
+    ordersDictionary = {} # map OrderID to dictionary of (Username + list of BurgerName, Status)
 
     for OrderID, User, BurgerName, status in rows:
         if OrderID not in ordersDictionary:
@@ -174,7 +178,7 @@ def viewAllOrders(con, cursor, username):
         print()
     print("-" * 50)
     input("(Press Enter to exit)")
-    dashboards.employeeDashboard(con, cursor, username)
+    dashboards.employeeDashboard(con, cursor, username) # return to employe dashboard
 
 
 def viewOngoingOrders(con, cursor, username):
