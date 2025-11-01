@@ -50,6 +50,13 @@ def addToOrder(order, item):
     return order # returns the updated order variable
 
 
+# Provides selection menu to customer and commits selected items as orders to database
+# Arguments:
+# con: used for committing orders and passing database connection along for homePage
+# cursor: used to execute database queries
+# username: used for identifying logged-in customer and associating their UserID with their order
+# order: string consisting of unique item names separated by a comma (e.g. "Kingdom Fries,Triple Cheesy Princess,Kingdom Fries"). 
+#        It's formatted like this because it's easier to directly use it in a database query.
 def placeOrder(con, cursor, username, order = None):
     print('\n'*20)
     print('-' *50)
@@ -79,19 +86,20 @@ def placeOrder(con, cursor, username, order = None):
         except ValueError:
             print('Invalid input. Please enter a number.')
 
-    UserID = auth.fetchUserID(cursor, username)[0]
-    burgerIDs = fetchBurgerIDs(cursor, order)
+    UserID = auth.fetchUserID(cursor, username)[0] # converts username to UserID
+    burgerIDs = fetchBurgerIDs(cursor, order) # covnverts order string ('Kingdom Fries,Kingdom Fries') to string of IDs ('3,3')
 
-    cursor.execute("SELECT MAX(OrderID) FROM Orders")
+    cursor.execute("SELECT MAX(OrderID) FROM Orders") # fetches the highest value from the OrderID column
     lastOrder = cursor.fetchone()[0]
-    newOrderID = (lastOrder or 0) + 1
+    newOrderID = (lastOrder or 0) + 1 # adds one to the highest value and uses it for the new order
 
     for burgerID in burgerIDs:
+        # for each item in the order, insert row with OrderID (defined above), associated UserID and burgerID
         cursor.execute("INSERT INTO Orders (OrderID, UserID, BurgerID) VALUES (?, ?, ?)", (newOrderID, UserID, burgerID))
     con.commit()
 
-    listSelection(order)
-    dashboards.customerDashboard(con, cursor, username, "nospace")
+    listSelection(order) # order confirmation printout
+    dashboards.customerDashboard(con, cursor, username, "nospace") # returns to customer dashboard. "nospace" argument prevents newline printout in the customerDashboard function.
 
 
 def viewMyOrders(con, cursor, username):
